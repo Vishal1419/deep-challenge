@@ -4,46 +4,48 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2rem;
-  margin: 2.5rem 0;
+  @include fluid-type(1.5rem, 2rem);
+  margin: fluid-type(1.5rem, 2.5rem) 0;
 }
 
 h2 {
-  font-size: 1.5rem;
-  margin: 2rem 0;
+  @include fluid-type(1.17rem, 1.5rem);
+  margin: fluid-type(1.17rem, 2rem) 0;
 }
 
 h3 {
-  font-size: 1.17rem;
-  margin: 1.5rem 0;
+  @include fluid-type(1rem, 1.17rem);
+  margin: fluid-type(1rem, 1.5rem) 0;
 }
 
 h4 {
-  font-size: 1rem;
-  margin: 1rem 0;
+  @include fluid-type(0.83rem, 1rem);
+  margin: fluid-type(0.83rem, 1.17rem) 0;
 }
 
 h5 {
-  font-size: 0.83rem;
-  margin: 0.75rem 0;
+  @include fluid-type(0.67rem, 0.83rem);
+  margin: fluid-type(0.67rem, 1rem) 0;
 }
 
 h6 {
-  font-size: 0.67rem;
-  margin: 0.5rem 0;
+  @include fluid-type(0.5rem, 0.67rem);
+  margin: fluid-type(0.5rem, 0.83rem) 0;
 }
 
 p {
-  font-size: 1rem;
+  @include fluid-type(0.83rem, 1rem);
   line-height: 1.69;
-  margin: 1rem 0;
+  margin: fluid-type(0.83rem, 1.17rem) 0;
   white-space: pre-line;
 }
 
 a {
+  @include fluid-type(0.83rem, 1rem);
   color: $accent-color;
 }
 
 sup {
+  @include fluid-type(0.83rem, 1rem);
   vertical-align: super;
 }
