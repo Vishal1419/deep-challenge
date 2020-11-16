@@ -1,11 +1,14 @@
 import React from 'react';
 
 import './assets/styles/app.scss';
+import Container from './shared/components/Container';
 
 function App() {
   return (
     <div className="App">
-      Hello World!
+      <Container>
+        Hello World!
+      </Container>
     </div>
   );
 }

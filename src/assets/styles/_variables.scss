@@ -9,23 +9,20 @@ $error-color: #ff4343;
 
 $font-family: 'Montserrat', sans-serif;
 
-@mixin mobile {
-  @media screen and (max-width: 576px) {
-    @content;
-  }
-}
-@mixin tablet {
-  @media screen and (max-width: 768px) {
-    @content;
-  }
-}
 @mixin laptop {
   @media screen and (max-width: 992px) {
     @content;
   }
 }
-@mixin desktop {
-  @media screen and (max-width: 1200px) {
+
+@mixin tablet {
+  @media screen and (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media screen and (max-width: 576px) {
     @content;
   }
 }
