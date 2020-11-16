@@ -1,0 +1,15 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: $font-family;
+  font-weight: 400;
+  background-color: $background-color;
+  height: 100%
+}
+
+#root, #root > .App, #root > .App > .container {
+  height: 100%;
+}

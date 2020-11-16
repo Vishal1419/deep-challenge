@@ -1,0 +1,49 @@
+h1, h2, h3, h4, h5, h6 {
+  color: $accent-color;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 2.5rem 0;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 2rem 0;
+}
+
+h3 {
+  font-size: 1.17rem;
+  margin: 1.5rem 0;
+}
+
+h4 {
+  font-size: 1rem;
+  margin: 1rem 0;
+}
+
+h5 {
+  font-size: 0.83rem;
+  margin: 0.75rem 0;
+}
+
+h6 {
+  font-size: 0.67rem;
+  margin: 0.5rem 0;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.69;
+  margin: 1rem 0;
+  white-space: pre-line;
+}
+
+a {
+  color: $accent-color;
+}
+
+sup {
+  vertical-align: super;
+}
