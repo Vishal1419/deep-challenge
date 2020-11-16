@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect'
 
 import Button from './index';
 
-it ('renders correctly', () => {
+it ('renders children correctly', () => {
   const handleClick = jest.fn();
   render(
     <Button onClick={handleClick}>
