@@ -5,51 +5,43 @@ import Dialog from 'react-modal';
 
 import DialogOpener from './index';
 
-it ('renders component prop correctly', () => {
-  const handleOpen = jest.fn;
-  const { container } = render(
-    <DialogOpener component={() => <button onClick={handleOpen}>Open Dialog</button>}>
-      {() => 'Dialog Content'}
-    </DialogOpener>
-  );
-  Dialog.setAppElement(container);
-  expect(screen.getByText(/open dialog/i)).toBeInTheDocument();
-});
+describe('component prop and children prop', () => {
+  let container: HTMLElement;
 
-it('opens dialog when component prop triggers open function', () => {
-  const { container } = render(
-    <DialogOpener component={(open) => <button onClick={open}>Open Dialog</button>}>
-      {() => 'Dialog Content'}
-    </DialogOpener>
-  );
-  Dialog.setAppElement(container);
-  fireEvent.click(screen.getByText(/open dialog/i));
-  expect(screen.getByText(/dialog content/i)).toBeInTheDocument();
-});
+  beforeEach(() => {
+    const { container: _container } = render(
+      <DialogOpener component={(open) => <button onClick={open}>Open Dialog</button>}>
+        {(close) => <button onClick={close}>Dialog Content</button>}
+      </DialogOpener>
+    );
+    container = _container;
+  });
 
-it('renders children when dialog opens', () => {
-  const { container } = render(
-    <DialogOpener component={(open) => <button onClick={open}>Open Dialog</button>}>
-      {() => 'Dialog Content'}
-    </DialogOpener>
-  );
-  Dialog.setAppElement(container);
-  expect(() => screen.getByText(/dialog content/i)).toThrow();
-  fireEvent.click(screen.getByText(/open dialog/i));
-  expect(screen.getByText(/dialog content/i)).toBeInTheDocument();
-});
+  it ('renders component prop correctly', () => {
+    Dialog.setAppElement(container);
+    expect(screen.getByText(/open dialog/i)).toBeInTheDocument();
+  });
 
-it('closes dialog when children trigger close function', () => {
-  const { container } = render(
-    <DialogOpener component={(open) => <button onClick={open}>Open Dialog</button>}>
-      {(close) => <button onClick={close}>Dialog Content</button>}
-    </DialogOpener>
-  );
-  Dialog.setAppElement(container);
-  fireEvent.click(screen.getByText(/open dialog/i));
-  expect(screen.getByText(/dialog content/i)).toBeInTheDocument();
-  fireEvent.click(screen.getByText(/dialog content/i));
-  expect(() => screen.getByText(/dialog content/i)).toThrow();
+  it('opens dialog when component prop triggers open function', () => {
+    Dialog.setAppElement(container);
+    fireEvent.click(screen.getByText(/open dialog/i));
+    expect(screen.getByText(/dialog content/i)).toBeInTheDocument();
+  });
+
+  it('renders children when dialog opens', () => {
+    Dialog.setAppElement(container);
+    expect(() => screen.getByText(/dialog content/i)).toThrow();
+    fireEvent.click(screen.getByText(/open dialog/i));
+    expect(screen.getByText(/dialog content/i)).toBeInTheDocument();
+  });
+
+  it('closes dialog when children trigger close function', () => {
+    Dialog.setAppElement(container);
+    fireEvent.click(screen.getByText(/open dialog/i));
+    expect(screen.getByText(/dialog content/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/dialog content/i));
+    expect(() => screen.getByText(/dialog content/i)).toThrow();
+  });
 });
 
 it('adds dialogSize property value to dialog\'s class attribute', () => {

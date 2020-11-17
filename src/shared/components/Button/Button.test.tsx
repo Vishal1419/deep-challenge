@@ -35,6 +35,16 @@ it('sets type correctly', () => {
   expect(container.firstChild).toHaveAttribute('type', 'submit');
 });
 
+it('sets default value for type when type is not passed in', () => {
+  const handleClick = jest.fn();
+  const { container } = render(
+    <Button onClick={handleClick}>
+      Click Me!
+    </Button>
+  );
+  expect(container.firstChild).toHaveAttribute('type', 'button');
+})
+
 it('attaches variant as className', () => {
   const handleClick = jest.fn();
   const { container } = render(
@@ -44,6 +54,18 @@ it('attaches variant as className', () => {
   );
   expect(container.firstChild).toHaveClass('outlined');
   expect(container.firstChild).not.toHaveClass('contained');
+  expect(container.firstChild).not.toHaveClass('text');
+});
+
+it('attaches default variant as className when variant is not passed in', () => {
+  const handleClick = jest.fn();
+  const { container } = render(
+    <Button onClick={handleClick}>
+      Click Me!
+    </Button>
+  );
+  expect(container.firstChild).toHaveClass('contained');
+  expect(container.firstChild).not.toHaveClass('outlined');
   expect(container.firstChild).not.toHaveClass('text');
 });
 

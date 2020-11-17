@@ -14,26 +14,34 @@ it('renders label correctly', () => {
 
 it('attaches id to checkbox', () => {
   const handleFavoriteChange = jest.fn();
-  const { getByTestId } = render(
+  render(
     <Favorite id="fav-id" name="fav" checked onChange={handleFavoriteChange} />
   );
-  expect(getByTestId('checkbox')).toHaveAttribute('id', 'fav-id');
+  expect(screen.getByTestId('checkbox')).toHaveAttribute('id', 'fav-id');
+});
+
+it('attaches name as id to checkbox when id is not passed in', () => {
+  const handleFavoriteChange = jest.fn();
+  render(
+    <Favorite name="fav" checked onChange={handleFavoriteChange} />
+  );
+  expect(screen.getByTestId('checkbox')).toHaveAttribute('id', 'fav');
 });
 
 it('attaches name to checkbox', () => {
   const handleFavoriteChange = jest.fn();
-  const { getByTestId } = render(
+  render(
     <Favorite name="fav" checked onChange={handleFavoriteChange} />
   );
-  expect(getByTestId('checkbox')).toHaveAttribute('name', 'fav');
+  expect(screen.getByTestId('checkbox')).toHaveAttribute('name', 'fav');
 });
 
 it('sets default value of checkbox', () => {
   const handleFavoriteChange = jest.fn();
-  const { getByTestId } = render(
+  render(
     <Favorite name="fav" checked onChange={handleFavoriteChange} />
   );
-  expect(getByTestId('checkbox')).toHaveProperty('checked', true);
+  expect(screen.getByTestId('checkbox')).toHaveProperty('checked', true);
 });
 
 it('calls onChange when clicked', () => {
