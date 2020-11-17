@@ -1,0 +1,39 @@
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  .dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    right: unset;
+    bottom: unset;
+    width: 100%;
+    max-height: 90%;
+    border: 1px solid rgb(204, 204, 204);
+    background: rgb(255, 255, 255);
+    border-radius: 4px;
+    outline: none;
+    padding: 1rem;
+    &.small {
+      max-width: 400px;
+    }
+    &.medium {
+      max-width: 600px;
+    }
+    &.large {
+      max-width: 90%;
+    }
+  }
+  @include mobile {
+    .dialog {
+      &, &.small, &.medium, &.large {
+        max-width: calc(100% - 2rem);
+      }
+    }
+  }
+}
