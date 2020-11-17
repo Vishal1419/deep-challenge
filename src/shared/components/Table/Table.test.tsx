@@ -31,25 +31,22 @@ const items: Item[] = [
 
 describe('columns and items', () => {
 
-  let container: HTMLElement;
-
   beforeEach(() => {
-    const { container: _container } = render(
+    render(
       <Table columns={columns} items={items} />
     );
-    container = _container;
-  })
+  });
 
   it('renders header', () => {
-    expect(container.querySelectorAll('thead > tr')).toHaveLength(1);
+    expect(document.querySelectorAll('thead > tr')).toHaveLength(1);
   });
 
   it('renders number of table rows equals to number of items', () => {
-    expect(container.querySelectorAll('tbody > tr')).toHaveLength(2);
+    expect(document.querySelectorAll('tbody > tr')).toHaveLength(2);
   });
 
   it('renders number of table columns equals to number of columns', () => {
-    expect(container.querySelectorAll('td')).toHaveLength(4);
+    expect(document.querySelectorAll('td')).toHaveLength(4);
   });
 
   it('evaluates header value', () => {
@@ -86,24 +83,24 @@ it('sets class of the table element to a specified value', () => {
 });
 
 it('shows loader when loading property is true', () => {
-  const { container } = render(
+  render(
     <Table columns={columns} items={items} loading />
   );
-  expect(container.firstChild).toHaveAttribute('aria-busy', 'true');
+  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
 });
 
 it('does not show loader when loading property is false', () => {
-  const { container } = render(
+  render(
     <Table columns={columns} items={items} loading={false} />
   );
-  expect(container.firstChild).toHaveAttribute('aria-busy', 'false');
+  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
 });
 
 it('does not show loader when loading property is not supplied', () => {
-  const { container } = render(
+  render(
     <Table columns={columns} items={items} />
   );
-  expect(container.firstChild).toHaveAttribute('aria-busy', 'false');
+  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
 });
 
 it('shows default no data message when noDataMessage is not passed in and number of items is 0', () => {
@@ -121,20 +118,20 @@ it('shows passed in noDataMessage when number of items is 0', () => {
 });
 
 it('sets sticky class on each cell of table header when stickyHeader is true', () => {
-  const { container } = render(
+  render(
     <Table columns={columns} items={[]} noDataMessage="No data passed!" />
   );
-  const headerCells = container.querySelectorAll('th');
+  const headerCells = document.querySelectorAll('th');
   headerCells.forEach((headerCell) => {
     expect(headerCell).not.toHaveClass('sticky');
   });
 });
 
 it('does not set sticky class on each cell of table header when stickyHeader is false', () => {
-  const { container } = render(
+  render(
     <Table columns={columns} items={[]} noDataMessage="No data passed!" />
   );
-  const headerCells = container.querySelectorAll('th');
+  const headerCells = document.querySelectorAll('th');
   headerCells.forEach((headerCell) => {
     expect(headerCell).not.toHaveClass('sticky');
   });

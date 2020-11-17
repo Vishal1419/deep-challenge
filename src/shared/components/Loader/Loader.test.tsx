@@ -5,21 +5,21 @@ import '@testing-library/jest-dom/extend-expect'
 import Loader from './index';
 
 it('renders loader when loading is true', () => {
-  const { container } = render(
+  render(
     <Loader loading>
       Some Content
     </Loader>
   );
-  expect(container.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
+  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
 });
 
 it('does not render loader when loading is false', () => {
-  const { container } = render(
+  render(
     <Loader loading={false}>
       Some Content
     </Loader>
   );
-  expect(container.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
 });
 
 it('renders children when loading is true', () => {

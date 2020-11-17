@@ -1,0 +1,101 @@
+.react-select {
+  .react-select__control {
+    color: $text-color;
+    background-color: $accent-light;
+    border: 1px solid rgba($accent-color, 0.6);
+    border-radius: 0;
+    min-height: 0;
+    min-width: 15rem;
+    max-width: 20rem;
+    box-shadow: none;
+    cursor: pointer;
+    &.react-select__control--is-focused {
+      border-color: $accent-color;
+    }
+    &.react-select__control--is-disabled {
+      cursor: not-allowed;
+    }
+    .react-select__value-container {
+      > input[readonly] {
+        height: unset;
+        padding: 0;
+      }
+      .react-select__placeholder {
+        caret-color: $text-color;
+        color: rgba($text-color, 0.6);
+        font-weight: 300;
+        font-size: 0.875rem;
+      }
+      .react-select__input {
+        color: $text-color;
+        .react-select__placeholder {
+          caret-color: $text-color;
+          color: rgba($text-color, 0.6);
+          font-weight: 300;
+          font-size: 0.875rem;
+        }
+        input {
+          height: unset;
+          font-size: 1rem;
+          font-weight: 300;
+          line-height: normal;
+          letter-spacing: 0.5px;
+        }
+      }
+      .react-select__single-value {
+        color: $text-color;
+        &--is-disabled {
+          color: rgba($text-color, 0.7);
+        }
+      }
+    }
+    .react-select__indicators {
+      .react-select__indicator-separator {
+        display: none;
+      }
+      .react-select__clear-indicator {
+        padding: 0;
+        margin: 0 1rem 0 0.5rem;
+      }
+      .react-select__dropdown-indicator {
+        visibility: hidden;
+      }
+    }
+  }
+  &.react-select__error {
+    .react-select__control {
+      border: 1px solid $error-color;
+    }
+  }
+}
+
+.react-select__menu {
+  margin-top: 0 !important;
+  background-color: $accent-light;
+  border: 1px solid rgba($accent-color, 0.6);
+  border-radius: 0 !important;
+  .react-select__menu-list {
+    background-color: $accent-light;
+    max-height: 150px;
+    .react-select__option {
+      cursor: pointer;
+      color: $text-color;
+      &:hover {
+        color: $accent-color;
+        background-color: transparent;
+      }
+      &--is-focused {
+        color: $accent-color;
+        background-color: transparent;
+      }
+      &--is-selected {
+        color: $text-color;
+        background-color: $accent-color;
+        &:hover {
+          color: $text-color;
+          background-color: $accent-color;
+        }
+      }
+    }
+  }
+}

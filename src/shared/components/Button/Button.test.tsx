@@ -27,64 +27,64 @@ it('calls onClick prop when clicked', () => {
 
 it('sets type correctly', () => {
   const handleClick = jest.fn();
-  const { container } = render(
+  render(
     <Button type="submit" onClick={handleClick}>
       Click Me!
     </Button>
   );
-  expect(container.firstChild).toHaveAttribute('type', 'submit');
+  expect(screen.getByText(/click me/i)).toHaveAttribute('type', 'submit');
 });
 
 it('sets default value for type when type is not passed in', () => {
   const handleClick = jest.fn();
-  const { container } = render(
+  render(
     <Button onClick={handleClick}>
       Click Me!
     </Button>
   );
-  expect(container.firstChild).toHaveAttribute('type', 'button');
+  expect(screen.getByText(/click me/i)).toHaveAttribute('type', 'button');
 })
 
 it('attaches variant as className', () => {
   const handleClick = jest.fn();
-  const { container } = render(
+  render(
     <Button variant="outlined" onClick={handleClick}>
       Click Me!
     </Button>
   );
-  expect(container.firstChild).toHaveClass('outlined');
-  expect(container.firstChild).not.toHaveClass('contained');
-  expect(container.firstChild).not.toHaveClass('text');
+  expect(screen.getByText(/click me/i)).toHaveClass('outlined');
+  expect(screen.getByText(/click me/i)).not.toHaveClass('contained');
+  expect(screen.getByText(/click me/i)).not.toHaveClass('text');
 });
 
 it('attaches default variant as className when variant is not passed in', () => {
   const handleClick = jest.fn();
-  const { container } = render(
+  render(
     <Button onClick={handleClick}>
       Click Me!
     </Button>
   );
-  expect(container.firstChild).toHaveClass('contained');
-  expect(container.firstChild).not.toHaveClass('outlined');
-  expect(container.firstChild).not.toHaveClass('text');
+  expect(screen.getByText(/click me/i)).toHaveClass('contained');
+  expect(screen.getByText(/click me/i)).not.toHaveClass('outlined');
+  expect(screen.getByText(/click me/i)).not.toHaveClass('text');
 });
 
 it('sets className correctly', () => {
   const handleClick = jest.fn();
-  const { container } = render(
+  render(
     <Button className="click-me" onClick={handleClick}>
       Click Me!
     </Button>
   );
-  expect(container.firstChild).toHaveClass('click-me');
+  expect(screen.getByText(/click me/i)).toHaveClass('click-me');
 });
 
 it('sets disabled prop', () => {
   const handleClick = jest.fn();
-  const { container } = render(
+  render(
     <Button disabled onClick={handleClick}>
       Click Me!
     </Button>
   );
-  expect(container.firstChild).toHaveAttribute('disabled', '');
+  expect(screen.getByText(/click me/i)).toBeDisabled();
 });
