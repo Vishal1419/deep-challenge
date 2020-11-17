@@ -1,41 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 
 import './assets/styles/app.scss';
-import Button from './shared/components/Button';
-import ConfirmationDialog from './shared/components/ConfirmationDialog';
 import Container from './shared/components/Container';
-import DialogOpener, { CloseFunction, OpenFunction } from './shared/components/DialogOpener';
+import Input from './shared/components/Input';
 
 function App() {
   useEffect(() => {
     ReactModal.setAppElement('#root')
   }, []);
 
+  const [notes, setNotes] = useState('');
+
+  const handleNotesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setNotes(value);
+  }
+
   return (
     <div className="App" style={{ paddingTop: '20rem' }}>
       <Container>
-        <DialogOpener
-          component={(open: OpenFunction) => (
-            <Button onClick={open}>Click Me to Open Dialog</Button>
-          )}
-          dialogSize="small"
-        >
-          {
-            (close: CloseFunction) => (
-              <ConfirmationDialog
-                title="Are you sure?"
-                onCancel={() => close()}
-                onConfirm={() => {
-                  // do some work here
-                  close();
-                }}
-              >
-                Delete this element?
-              </ConfirmationDialog>
-            )
-          }
-        </DialogOpener>
+        <Input
+          name="notes"
+          label="Notes"
+          type="textarea"
+          value={notes}
+          onChange={handleNotesChange}
+        />
       </Container>
     </div>
   );
