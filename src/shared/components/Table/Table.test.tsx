@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'
 
 import Table, { TextAlign } from './index';
@@ -29,72 +29,60 @@ const items: Item[] = [
   { id: 2, name: 'Big Show' },
 ];
 
-it('renders header', () => {
-  const { container } = render(
-    <Table columns={columns} items={items} />
-  );
-  expect(container.querySelectorAll('thead > tr')).toHaveLength(1);
-});
+describe('columns and items', () => {
 
-it('renders number of table rows equals to number of items', () => {
-  const { container } = render(
-    <Table columns={columns} items={items} />
-  );
-  expect(container.querySelectorAll('tbody > tr')).toHaveLength(2);
-});
+  let container: HTMLElement;
 
-it('renders number of table columns equals to number of columns', () => {
-  const { container } = render(
-    <Table columns={columns} items={items} />
-  );
-  expect(container.querySelectorAll('td')).toHaveLength(4);
-});
+  beforeEach(() => {
+    const { container: _container } = render(
+      <Table columns={columns} items={items} />
+    );
+    container = _container;
+  })
 
-it('evaluates header value', () => {
-  const { getByText } = render(
-    <Table columns={columns} items={items} />
-  );
-  expect(getByText('Name')).toBeInTheDocument();
-});
+  it('renders header', () => {
+    expect(container.querySelectorAll('thead > tr')).toHaveLength(1);
+  });
 
-it('evaluates accessor value', () => {
-  const { getByText } = render(
-    <Table columns={columns} items={items} />
-  );
-  expect(getByText('Kane')).toBeInTheDocument();
-  expect(getByText('Big Show')).toBeInTheDocument();
-});
+  it('renders number of table rows equals to number of items', () => {
+    expect(container.querySelectorAll('tbody > tr')).toHaveLength(2);
+  });
 
-it('evaluates cell value', () => {
-  const { getByText } = render(
-    <Table columns={columns} items={items} />
-  );
-  expect(getByText('1')).toBeInTheDocument();
-  expect(getByText('2')).toBeInTheDocument();
-});
+  it('renders number of table columns equals to number of columns', () => {
+    expect(container.querySelectorAll('td')).toHaveLength(4);
+  });
 
-it('sets width of column to a specified value', () => {
-  const { getByText } = render(
-    <Table columns={columns} items={items} />
-  );
-  expect(getByText('1')).toHaveStyle({ width: 50 });
-  expect(getByText('2')).toHaveStyle({ width: 50 });
-});
+  it('evaluates header value', () => {
+    expect(screen.getByText('Name')).toBeInTheDocument();
+  });
 
-it('sets textAlign of column to a specified value', () => {
-  const { getByText } = render(
-    <Table columns={columns} items={items} />
-  );
-  expect(getByText('Name')).toHaveStyle({ textAlign: 'center' });
-  expect(getByText('Kane')).toHaveStyle({ textAlign: 'center' });
-  expect(getByText('Big Show')).toHaveStyle({ textAlign: 'center' });
+  it('evaluates accessor value', () => {
+    expect(screen.getByText('Kane')).toBeInTheDocument();
+    expect(screen.getByText('Big Show')).toBeInTheDocument();
+  });
+
+  it('evaluates cell value', () => {
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+  });
+
+  it('sets width of column to a specified value', () => {
+    expect(screen.getByText('1')).toHaveStyle({ width: 50 });
+    expect(screen.getByText('2')).toHaveStyle({ width: 50 });
+  });
+
+  it('sets textAlign of column to a specified value', () => {
+    expect(screen.getByText('Name')).toHaveStyle({ textAlign: 'center' });
+    expect(screen.getByText('Kane')).toHaveStyle({ textAlign: 'center' });
+    expect(screen.getByText('Big Show')).toHaveStyle({ textAlign: 'center' });
+  });
 });
 
 it('sets class of the table element to a specified value', () => {
-  const { getByTestId } = render(
+  render(
     <Table columns={columns} items={items} className="hello" />
   );
-  expect(getByTestId('table')).toHaveClass('hello');
+  expect(screen.getByTestId('table')).toHaveClass('hello');
 });
 
 it('shows loader when loading property is true', () => {
@@ -119,17 +107,17 @@ it('does not show loader when loading property is not supplied', () => {
 });
 
 it('shows default no data message when noDataMessage is not passed in and number of items is 0', () => {
-  const { getByText } = render(
+  render(
     <Table columns={columns} items={[]} />
   );
-  expect(getByText(/no data available/i)).toBeInTheDocument();
+  expect(screen.getByText(/no data available/i)).toBeInTheDocument();
 });
 
 it('shows passed in noDataMessage when number of items is 0', () => {
-  const { getByText } = render(
+  render(
     <Table columns={columns} items={[]} noDataMessage="No data passed!" />
   );
-  expect(getByText('No data passed!')).toBeInTheDocument();
+  expect(screen.getByText('No data passed!')).toBeInTheDocument();
 });
 
 it('sets sticky class on each cell of table header when stickyHeader is true', () => {
