@@ -1,26 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import ReactModal from 'react-modal';
 
 import './assets/styles/app.scss';
-import Favorite from './shared/components/Favorite';
+import Button from './shared/components/Button';
+import ConfirmationDialog from './shared/components/ConfirmationDialog';
 import Container from './shared/components/Container';
+import DialogOpener, { CloseFunction, OpenFunction } from './shared/components/DialogOpener';
 
 function App() {
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  const handleFavoriteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { checked } = event.target;
-    setIsFavorite(checked);
-  }
+  useEffect(() => {
+    ReactModal.setAppElement('#root')
+  }, []);
 
   return (
     <div className="App" style={{ paddingTop: '20rem' }}>
       <Container>
-        <Favorite
-          name="fav"
-          label={`Click me to ${isFavorite ? 'Unfavorite' : 'Favorite'}`}
-          checked={isFavorite}
-          onChange={handleFavoriteChange}
-        />
+        <DialogOpener
+          component={(open: OpenFunction) => (
+            <Button onClick={open}>Click Me to Open Dialog</Button>
+          )}
+          dialogSize="small"
+        >
+          {
+            (close: CloseFunction) => (
+              <ConfirmationDialog
+                title="Are you sure?"
+                onCancel={() => close()}
+                onConfirm={() => {
+                  // do some work here
+                  close();
+                }}
+              >
+                Delete this element?
+              </ConfirmationDialog>
+            )
+          }
+        </DialogOpener>
       </Container>
     </div>
   );
