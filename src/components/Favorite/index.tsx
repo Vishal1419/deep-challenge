@@ -1,7 +1,7 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import cx from 'classnames';
 
-import { ReactComponent as HeartIcon } from '../../../assets/icons/heart.svg';
+import { ReactComponent as HeartIcon } from '../../assets/icons/heart.svg';
 
 interface Props {
   id?: string;

@@ -5,13 +5,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-block-ui/style.css';
 
 import './assets/styles/app.scss';
-import Container from './shared/components/Container';
-import { showNotification } from './shared/notifier';
+import Container from './components/Container';
 
 function App() {
   useEffect(() => {
-    ReactModal.setAppElement('#root')
-    {showNotification('This is a test notification', 'error')}
+    ReactModal.setAppElement('#root');
   }, []);
 
   return (
