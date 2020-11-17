@@ -1,0 +1,36 @@
+table.table {
+  border-collapse: collapse;
+  width: 100%;
+  tr {
+    border-bottom: 1px solid $accent-color;
+    th {
+      padding: 1rem;
+      font-size: 0.875rem;
+      font-weight: bold;
+      color: $accent-color;
+      text-align: left;
+      &:first-child {
+        padding-left: 0;
+      }
+      &:last-child {
+        padding-right: 0;
+      }
+      &.sticky {
+        position: sticky;
+        top: 0;
+        background-color: $background-color;
+      }
+    }
+    td {
+      padding: 1rem;
+      color: $text-color;
+      font-size: 0.875rem;
+      &:first-child {
+        padding-left: 0;
+      }
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+  }
+}

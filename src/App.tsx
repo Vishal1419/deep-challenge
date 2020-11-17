@@ -4,23 +4,60 @@ import 'react-block-ui/style.css';
 
 import './assets/styles/app.scss';
 import Container from './shared/components/Container';
-import Loader from './shared/components/Loader';
+import Table, { TextAlign } from './shared/components/Table';
+import Button from './shared/components/Button';
+
+interface Item {
+  id: number;
+  firstName: string;
+  lastName: string;
+};
 
 function App() {
   useEffect(() => {
     ReactModal.setAppElement('#root')
   }, []);
 
-  return (
-    <div className="App" style={{ paddingTop: '20rem' }}>
-      <Container>
-        <div>
-          <Loader loading>
-            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+  const columns = [
+    {
+      header: 'Id',
+      accessor: 'id',
+    },
+    {
+      header: 'First Name',
+      accessor: 'firstName',
+    },
+    {
+      header: 'Last Name',
+      accessor: 'lastName',
+    },
+    {
+      header: 'Full Name',
+      cell: ({ firstName, lastName }: Item) => `${firstName} ${lastName}`,
+    },
+    {
+      header: '',
+      cell: ({ id }: Item) => <Button variant="text" onClick={() => console.log(id)}>Remove</Button>,
+      textAlign: 'right' as TextAlign,
+    },
+  ];
 
-            The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-          </Loader>
-        </div>
+  const items: Item[] = [
+    { id: 1, firstName: 'Shane', lastName: 'Watson' },
+    { id: 2, firstName: 'Ricky', lastName: 'Ponting' },
+    { id: 3, firstName: 'Brett', lastName: 'Lee' },
+    { id: 4, firstName: 'Chris', lastName: 'Gayle' },
+    { id: 5, firstName: 'Virat', lastName: 'Kohli' },
+    { id: 6, firstName: 'Virat', lastName: 'Kohli' },
+    { id: 7, firstName: 'Virat', lastName: 'Kohli' },
+    { id: 8, firstName: 'Virat', lastName: 'Kohli' },
+    { id: 9, firstName: 'Virat', lastName: 'Kohli' },
+  ];
+
+  return (
+    <div className="App" style={{ paddingTop: '0rem', height: '20rem', overflow: 'auto' }}>
+      <Container>
+        <Table columns={columns} items={items} stickyHeader />
       </Container>
     </div>
   );
