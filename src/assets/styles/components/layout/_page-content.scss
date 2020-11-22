@@ -1,0 +1,12 @@
+.page-content {
+  padding: 2rem;
+  background-color: $accent-light;
+  overflow: auto;
+  flex: 1;
+  margin-bottom: 2rem;
+  @include mobile {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+ 

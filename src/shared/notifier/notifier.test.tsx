@@ -46,14 +46,13 @@ it('sets default timeout to 5000ms', async () => {
 });
 
 
-xit('dismisses notification when called', async () => {
+it('dismisses notification when called', async () => {
   render(<ToastContainer />);
-  const notificationId = showNotification('Test Notification', 'success', 2000);
+  const notificationId = showNotification('Test Notification', 'success', 10000);
   await waitFor(() => {
     expect(screen.getByText('Test Notification')).toBeInTheDocument();
   });
   dismissNotification(notificationId);
-  await waitForElementToBeRemoved(() => {
-    expect(screen.queryByText('Test Notification')).not.toBeInTheDocument();
-  });
+  await waitForElementToBeRemoved(screen.queryByText('Test Notification'), { timeout: 2000 });
+  expect(screen.queryByText('Test Notification')).not.toBeInTheDocument();
 });

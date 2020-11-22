@@ -1,0 +1,43 @@
+.weather-info-layout {
+  .weather-info {
+    height: 100%;
+    display: flex;
+    .weather-details-container {
+      height: 100%;
+      padding-right: 2rem;
+      border-right: 1px solid $background-color;
+      @import 'weather-details';
+    }
+    .user-details-container {
+      height: 100%;
+      width: 100%;
+      padding-left: 2rem;
+      @import 'user-details';
+    }
+  }
+  
+  @include mobile {
+    .page-content {
+      background-color: transparent;
+      padding: 0;
+      .weather-info {
+        flex-direction: column;
+        .weather-details-container {
+          height: unset;
+          background-color: $accent-light;
+          padding-right: 0;
+          border-right: unset;
+          padding: 1rem;
+        }
+        .user-details-container {
+          height: unset;
+          flex: 1;
+          background-color: $accent-light;
+          padding-left: 0;
+          padding: 1rem;
+          margin-top: 1rem;
+        }
+      }
+    }
+  }
+}
