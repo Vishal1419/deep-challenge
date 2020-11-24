@@ -6,6 +6,7 @@ import * as SWR from 'swr';
 
 import useWeather from './index';
 import { BASE_URL, WEATHER_STACK_API_KEY } from '../../config';
+import { fetcher } from '../../shared/utils';
 
 const data = [
   {
@@ -53,7 +54,7 @@ const swrHelper = (
   urlSuffix: string,
 ) => {
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -63,6 +64,7 @@ const swrHelper = (
 
   expect(SWR.default).toHaveBeenCalledWith(
     `${BASE_URL.WEATHER_SERVICE}?access_key=${WEATHER_STACK_API_KEY}&${urlSuffix}`,
+    expect.any(Object),
   );
 };
 
@@ -88,7 +90,7 @@ it('should set cityName as q in swr call when multiple cityName are passed', () 
 
 it('should transform received data correctly when single city is passed as string', async () => {
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -115,7 +117,7 @@ it('should transform received data correctly when single city is passed as strin
 
 it('should transform received data correctly when single city is passed as array', async () => {
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -142,7 +144,7 @@ it('should transform received data correctly when single city is passed as array
 
 it('should transform received data correctly when multiple cities are passed', async () => {
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -174,7 +176,7 @@ it('should handle 200 with embedded error correctly when single city is passed a
         ctx.status(200),
         ctx.json({
           error: {
-            code: 615,
+            code: 612,
             info: 'No data found for specified city',
           }
         }),
@@ -183,7 +185,7 @@ it('should handle 200 with embedded error correctly when single city is passed a
   );
 
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -211,7 +213,7 @@ it('should handle 200 with embedded error correctly when single city is passed a
         ctx.status(200),
         ctx.json({
           error: {
-            code: 615,
+            code: 612,
             info: 'No data found for specified city',
           }
         }),
@@ -220,7 +222,7 @@ it('should handle 200 with embedded error correctly when single city is passed a
   );
 
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -248,7 +250,7 @@ it('should handle 200 with embedded error correctly when multiple cities are pas
         ctx.status(200),
         ctx.json({
           error: {
-            code: 615,
+            code: 612,
             info: 'No data found for specified city',
           }
         }),
@@ -257,7 +259,7 @@ it('should handle 200 with embedded error correctly when multiple cities are pas
   );
 
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -275,5 +277,320 @@ it('should handle 200 with embedded error correctly when multiple cities are pas
   const { weatherCollection, loading, error } = result.current;
   expect(loading).toBeFalsy();
   expect(error).toMatchObject({ message: 'No data found for specified city' })
+  expect(weatherCollection).toBeUndefined();
+});
+
+it('should transform 200 with embedded error 615 correctly when single city is passed as string', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          error: {
+            code: 615,
+            info: 'No data found for specified city',
+          }
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = 'tokyo';
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weather: _weather, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined();
+  expect(_weather).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weather, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: 'Weather info for this city is not available' })
+  expect(weather).toBeUndefined();
+});
+
+it('should transform 200 with embedded error 615 correctly when single city is passed as array', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          error: {
+            code: 615,
+            info: 'No data found for specified city',
+          }
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = ['tokyo'];
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weather: _weather, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined()
+  expect(_weather).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weather, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: 'Weather info for this city is not available' })
+  expect(weather).toBeUndefined();
+});
+
+it('should transform 200 with embedded error 615 correctly when multiple cities are passed in', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          error: {
+            code: 615,
+            info: 'No data found for specified city',
+          }
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = ['tokyo', 'new york'];
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weatherCollection: _weatherCollection, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined();
+  expect(_weatherCollection).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weatherCollection, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: 'Weather info for this city is not available' })
+  expect(weatherCollection).toBeUndefined();
+});
+
+it('should handle 4xx correctly when single city is passed as string', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res.once(
+        ctx.status(422),
+        ctx.json({
+          message: '422 error',
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = 'tokyo';
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weather: _weather, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined();
+  expect(_weather).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weather, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: '422 error' })
+  expect(weather).toBeUndefined();
+});
+
+it('should handle 4xx correctly when single city is passed as array', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res.once(
+        ctx.status(422),
+        ctx.json({
+          message: '422 error',
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = ['tokyo'];
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weather: _weather, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined()
+  expect(_weather).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weather, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: '422 error' })
+  expect(weather).toBeUndefined();
+});
+
+it('should handle 4xx correctly when multiple cities are passed in', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res.once(
+        ctx.status(422),
+        ctx.json({
+          message: '422 error',
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = ['tokyo', 'new york'];
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weatherCollection: _weatherCollection, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined();
+  expect(_weatherCollection).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weatherCollection, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: '422 error' })
+  expect(weatherCollection).toBeUndefined();
+});
+
+it('should handle 5xx correctly when single city is passed as string', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res.once(
+        ctx.status(500),
+        ctx.json({
+          message: 'Unhandled server error',
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = 'tokyo';
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weather: _weather, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined();
+  expect(_weather).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weather, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: 'Unhandled server error' })
+  expect(weather).toBeUndefined();
+});
+
+it('should handle 4xx correctly when single city is passed as array', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res.once(
+        ctx.status(500),
+        ctx.json({
+          message: 'Unhandled server error',
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = ['tokyo'];
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weather: _weather, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined()
+  expect(_weather).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weather, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: 'Unhandled server error' })
+  expect(weather).toBeUndefined();
+});
+
+it('should handle 4xx correctly when multiple cities are passed in', async () => {
+  server.use(
+    rest.get(BASE_URL.WEATHER_SERVICE, (req, res, ctx) => {
+      return res.once(
+        ctx.status(500),
+        ctx.json({
+          message: 'Unhandled server error',
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const cityName = ['tokyo', 'new york'];
+  const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
+  
+  const { weatherCollection: _weatherCollection, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined();
+  expect(_weatherCollection).toBeUndefined();
+
+  await waitForNextUpdate();
+
+  const { weatherCollection, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: 'Unhandled server error' })
   expect(weatherCollection).toBeUndefined();
 });

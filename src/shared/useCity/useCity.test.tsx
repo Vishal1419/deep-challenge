@@ -6,6 +6,7 @@ import * as SWR from 'swr';
 
 import useCity, { SortType } from './index';
 import { BASE_URL } from '../../config';
+import { fetcher } from '../../shared/utils';
 
 const data = {
   records: [
@@ -53,7 +54,7 @@ const swrHelper = (
   urlSuffix: string
 ) => {
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -143,7 +144,7 @@ it('should set all the provided parameters', () => {
 
 it('should transform received data correctly', async () => {
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -167,22 +168,54 @@ it('should transform received data correctly', async () => {
   expect(cities).toEqual(transformedCities);
 });
 
-it('should handle 4xx correctly', async () => {
+it('should handle 200 with embedded error correctly', async () => {
   server.use(
     rest.get(BASE_URL.CITIES_SERVICE, (req, res, ctx) => {
       return res(
-        ctx.status(404),
+        ctx.status(200),
         ctx.json({
           error: {
-            message: 'No cities found',
-          }
+            message: 'Some embedded error',
+          },
         }),
       );
     }),
   );
 
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
+      {children}
+    </SWR.SWRConfig>
+  );
+
+  const { result, waitForNextUpdate } = renderHook(() => useCity({ rows: 2 }), { wrapper });
+  const { cities: _cities, loading: _loading, error: _error } = result.current;
+  expect(_loading).toBeTruthy();
+  expect(_error).toBeUndefined();
+  expect(_cities).toHaveLength(0);
+  
+  await waitForNextUpdate();
+  
+  const { cities, loading, error } = result.current;
+  expect(loading).toBeFalsy();
+  expect(error).toMatchObject({ message: 'Some embedded error' });
+  expect(cities).toHaveLength(0);
+});
+
+it('should handle 4xx correctly', async () => {
+  server.use(
+    rest.get(BASE_URL.CITIES_SERVICE, (req, res, ctx) => {
+      return res(
+        ctx.status(404),
+        ctx.json({
+          message: 'No cities found',
+        }),
+      );
+    }),
+  );
+
+  const wrapper = ({ children } : { children: ReactNode }) => (
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );
@@ -207,16 +240,14 @@ it('should handle 5xx correctly', async () => {
       return res(
         ctx.status(500),
         ctx.json({
-          error: {
-            message: 'Server error',
-          }
+          message: 'Server error',
         }),
       );
     }),
   );
 
   const wrapper = ({ children } : { children: ReactNode }) => (
-    <SWR.SWRConfig value={{ dedupingInterval: 0 }}>
+    <SWR.SWRConfig value={{ fetcher, dedupingInterval: 0 }}>
       {children}
     </SWR.SWRConfig>
   );

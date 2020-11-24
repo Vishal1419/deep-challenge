@@ -9,13 +9,7 @@ import './assets/styles/app.scss';
 import Routes from './Routes';
 import Container from './components/Container';
 import ErrorBoundary from './components/ErrorBoundary';
-
-const fetcher = (input: RequestInfo, init?: RequestInit | undefined) =>
-  fetch(input, init)
-    .then(res => res.json())
-    .catch(err => {
-      throw err;
-    });
+import { fetcher } from './shared/utils';
 
 function App() {
   useEffect(() => {

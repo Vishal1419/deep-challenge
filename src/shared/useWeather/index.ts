@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { Weather } from '../interfaces';
 import { BASE_URL, WEATHER_STACK_API_KEY } from '../../config';
 
-interface WeatherData {
+interface WeatherResponse {
   location: {
     name: string;
   },
@@ -21,14 +21,23 @@ interface WeatherData {
 }
 
 interface WeatherResponseSingular {
-  data?: WeatherData,
+  data?: WeatherResponse,
   error?: {
     message: string;
   }
 }
 
 interface WeatherResponseMultiple {
-  data?: WeatherData[],
+  data?: WeatherResponse[];
+  error?: {
+    message: string;
+  }
+}
+
+interface WeatherData {
+  weatherCollection?: Weather[];
+  weather?: Weather;
+  loading: boolean;
   error?: {
     message: string;
   }
@@ -39,7 +48,7 @@ interface Props {
 };
 
 const useWeather = ({ cityName }: Props) => {
-  const response = useSWR(
+  const response: WeatherResponseSingular & WeatherResponseMultiple = useSWR(
     (() => {
       if (Array.isArray(cityName)) {
         return cityName.length > 0
@@ -47,16 +56,22 @@ const useWeather = ({ cityName }: Props) => {
           : null
       }
       return `${BASE_URL.WEATHER_SERVICE}?access_key=${WEATHER_STACK_API_KEY}&query=${cityName}`
-    })()
+    })(),
+    { shouldRetryOnError: false }
   );
 
-  if (Array.isArray(response.data)) {
-    const { data, error }: WeatherResponseMultiple = response;
+  let weatherCollection: Weather[] = [];
+  let weather: Weather | undefined;
+  let _error = response.error;
 
-    let weatherCollection: Weather[] = [];
-    let _error = error;
+  if (response.data?.error) {
+    const { code, info } = response.data.error;
+    _error = { message: code === 615 ? 'Weather info for this city is not available' : info };
+  }
 
-    if (!_error) {
+  if(!_error) {
+    if (Array.isArray(response.data)) {
+      const { data } : WeatherResponseMultiple = response;
       weatherCollection = data?.map(item => ({
         title: item.location.name,
         temperature: item.current.temperature,
@@ -65,40 +80,33 @@ const useWeather = ({ cityName }: Props) => {
         windSpeed: item.current.wind_speed,
         imageSource: item.current.weather_icons[0],
       })) || [];
+    } else {
+      const { data } : WeatherResponseSingular = response;
+      if (data) {
+        weather = {
+          title: data.location.name || cityName as string,
+          temperature: data.current.temperature || 0,
+          precipitation: data.current.precip || 0,
+          humidity: data.current.humidity || 0,
+          windSpeed: data.current.wind_speed || 0,
+          imageSource: data.current.weather_icons[0] || '',
+        };
+      }
     }
-
-    return {
-      weatherCollection,
-      loading: !_error && !data,
-      error: _error,
-    };
-  } else {
-    const { data, error }: WeatherResponseSingular = response;
-
-    let weather: Weather | undefined = undefined;
-    let _error = error;
-
-    if (data?.error) {
-      _error = { message: data?.error.info };
-    }
-
-    if (!_error && data && data.location) {
-      weather = {
-        title: data.location.name || cityName as string,
-        temperature: data.current.temperature || 0,
-        precipitation: data.current.precip || 0,
-        humidity: data.current.humidity || 0,
-        windSpeed: data.current.wind_speed || 0,
-        imageSource: data.current.weather_icons[0] || '',
-      };
-    }
-
-    return {
-      weather,
-      loading: !_error && !data,
-      error: _error,
-    };
   }
+
+  const returnData: WeatherData  = {
+    loading: !_error && !(weather || (weatherCollection && weatherCollection.length > 0)),
+    error: _error,
+  }
+
+  if(weatherCollection && weatherCollection.length > 0) {
+    returnData.weatherCollection = weatherCollection;
+  } else {
+    returnData.weather = weather;
+  }
+
+  return returnData;
 };
 
 export default useWeather;

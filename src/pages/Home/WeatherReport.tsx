@@ -30,7 +30,7 @@ const WeatherReport: FunctionComponent<Props> = ({ cityWeatherCollection, loadin
   }, [cityWeatherCollection]);
   
   useEffect(() => {
-    if (!loading && items.length === 0 && rerender) rerender();
+    if (!loading && items.filter(item => !item.isFavorite).length === 0 && rerender) rerender();
   }, [items.length, loading, rerender]);
 
   useEffect(() => {
@@ -49,12 +49,12 @@ const WeatherReport: FunctionComponent<Props> = ({ cityWeatherCollection, loadin
 
   const handleRemoveCity = (close: CloseFunction, name: string) => {
     removeCity(name);
-    setItems(prevValue => prevValue.filter(item => item.name !== name));
+    setItems(prevValue => [...prevValue.filter(item => item.name !== name)]);
     showNotification('City removed!');
     close();
   };
 
-  const columns = React.useMemo(() => [
+  const columns = [
     {
       header: 'City',
       cell: ({ name, title }: EnhancedCityWeather) => <Link to={`/${name}`} className="city">{title}</Link>
@@ -72,6 +72,7 @@ const WeatherReport: FunctionComponent<Props> = ({ cityWeatherCollection, loadin
       header: '',
       cell: ({ isFavorite } : EnhancedCityWeather) => isFavorite && (
         <HeartIcon
+          data-testid="HeartIcon"
           fill="#6d3fdf"
           height={20}
           width={20}
@@ -80,32 +81,36 @@ const WeatherReport: FunctionComponent<Props> = ({ cityWeatherCollection, loadin
     },
     {
       header: '',
-      cell: ({ name, title, isFavorite }: EnhancedCityWeather) => getRemovedCities().includes(name)
-      ? (
-        <Button onClick={() => handleRestoreCity(name)}>Restore</Button>
-      )
-      : !isFavorite && (
-        <DialogOpener
-          component={(open: OpenFunction) => 
-            <Button variant="text" onClick={() => open()}>Remove</Button>
-          }
-        >
-          {
-            (close: CloseFunction) => (
-              <ConfirmationDialog
-                title="Are you sure?"
-                onCancel={() => close()}
-                onConfirm={() => handleRemoveCity(close, name)}
-              >
-                {`This operation will delete ${title} from Weather Report. \n Are you sure you want to delete it?`}
-              </ConfirmationDialog>
-            )
-          }
-        </DialogOpener>
-      ),
+      cell: ({ name, title, isFavorite }: EnhancedCityWeather) => {
+        if(isFavorite && getRemovedCities().find(item => item === name)) {
+          return <Button onClick={() => handleRestoreCity(name)}>Restore</Button>;
+        }
+
+        if(!isFavorite) {
+          return (
+            <DialogOpener
+              component={(open: OpenFunction) => 
+                <Button variant="text" onClick={() => open()}>Remove</Button>
+              }
+            >
+              {
+                (close: CloseFunction) => (
+                  <ConfirmationDialog
+                    title="Are you sure?"
+                    onCancel={() => close()}
+                    onConfirm={() => handleRemoveCity(close, name)}
+                  >
+                    {`This operation will delete ${title} from Weather Report. \n Are you sure you want to delete it?`}
+                  </ConfirmationDialog>
+                )
+              }
+            </DialogOpener>
+          );
+        }
+      },
       textAlign: 'right' as TextAlign,
     }
-  ], []);
+  ];
 
   return (
     <Table columns={columns} items={sortedItems} loading={loading} />

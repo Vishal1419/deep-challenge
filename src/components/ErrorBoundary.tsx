@@ -7,17 +7,15 @@ interface Props {
 
 interface State {
   hasError: boolean;
-  errorMessage: string;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
-    errorMessage: ''
   };
 
   public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, errorMessage: error.message };
+    return { hasError: true };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -25,12 +23,12 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public render() {
-    const { hasError, errorMessage } = this.state;
+    const { hasError } = this.state;
     const { children } = this.props;
     if (hasError) {
       return (
         <p className="error-boundary">
-          {errorMessage.startsWith('custom::') ? errorMessage.replace('custom::', '') : 'Sorry, something went wrong!'}
+          {'Sorry, something went wrong!'}
         </p>
       );
     }

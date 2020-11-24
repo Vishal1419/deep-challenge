@@ -2,17 +2,27 @@
   .weather-info {
     height: 100%;
     display: flex;
-    .weather-details-container {
-      height: 100%;
-      padding-right: 2rem;
-      border-right: 1px solid $background-color;
-      @import 'weather-details';
+    flex-direction: column;
+    .weather-info-title {
+      h1 {
+        margin-top: 0;
+      }
     }
-    .user-details-container {
-      height: 100%;
-      width: 100%;
-      padding-left: 2rem;
-      @import 'user-details';
+    .weather-info-details {
+      display: flex;
+      flex: 1;
+      .weather-details-container {
+        height: 100%;
+        padding-right: 2rem;
+        border-right: 1px solid $background-color;
+        @import 'weather-details';
+      }
+      .user-details-container {
+        height: 100%;
+        width: 100%;
+        padding-left: 2rem;
+        @import 'user-details';
+      }
     }
   }
   
@@ -21,21 +31,31 @@
       background-color: transparent;
       padding: 0;
       .weather-info {
-        flex-direction: column;
-        .weather-details-container {
-          height: unset;
-          background-color: $accent-light;
-          padding-right: 0;
-          border-right: unset;
+        .weather-info-title {
+          background-color: white;
           padding: 1rem;
+          padding-bottom: 0;
+          h1 {
+            margin: 0;
+          }
         }
-        .user-details-container {
-          height: unset;
-          flex: 1;
-          background-color: $accent-light;
-          padding-left: 0;
-          padding: 1rem;
-          margin-top: 1rem;
+        .weather-info-details {
+          flex-direction: column;
+          .weather-details-container {
+            height: unset;
+            background-color: $accent-light;
+            padding-right: 0;
+            border-right: unset;
+            padding: 1rem;
+          }
+          .user-details-container {
+            height: unset;
+            flex: 1;
+            background-color: $accent-light;
+            padding-left: 0;
+            padding: 1rem;
+            margin-top: 1rem;
+          }
         }
       }
     }
