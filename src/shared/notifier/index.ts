@@ -1,13 +1,16 @@
 import { ReactText } from 'react';
 import { toast } from 'react-toastify';
+import debounce from 'debounce-promise';
 
 export const showNotification: (
   message: string,
   type?: 'success' | 'error',
   timeout?: number,
-) => ReactText
-  = (message, type = 'success', timeout = 5000) => toast(
+) => Promise<ReactText>
+  = debounce((message: string, type: 'success' | 'error' = 'success', timeout: number = 5000): ReactText => toast(
       message, { type, autoClose: timeout },
-    );
+    ), 300);
 
-export const dismissNotification = (toastId: ReactText) => toast.dismiss(toastId);
+export const dismissNotification = (toastPromise: Promise<ReactText>) => toastPromise.then((toastId) => {
+  toast.dismiss(toastId)
+});

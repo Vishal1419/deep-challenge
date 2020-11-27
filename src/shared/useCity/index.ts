@@ -38,7 +38,7 @@ const useCity = ({ start = 0, rows, query, sort, exclude }: Props) => {
 
   const { data, error }: CitiesResponse = useSWR(
     `${BASE_URL.CITIES_SERVICE}?dataset=worldcitiespop&facet=city&${params.join('&')}`,
-    { revalidateOnFocus: false,  }
+    { revalidateOnFocus: false,  },
   );
 
   let cities: City[] = [];

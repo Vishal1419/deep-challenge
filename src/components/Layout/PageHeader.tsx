@@ -11,7 +11,6 @@ import { showNotification } from '../../shared/notifier';
 import { BASE_URL } from '../../config';
 
 interface Props {
-  city?: string;
   showBackButton?: boolean;
 }
 
@@ -35,7 +34,7 @@ interface Option {
   value: string;
 }
 
-const PageHeader: FunctionComponent<Props & EnhancedProps> = ({ city, showBackButton = false, history }) => {
+const PageHeader: FunctionComponent<Props & EnhancedProps> = ({ showBackButton = false, history }) => {
   const [selectedCity, setSelectedCity] = useState<ValueType<Option>>(null);
 
   const loadCities = debounce(
@@ -68,9 +67,7 @@ const PageHeader: FunctionComponent<Props & EnhancedProps> = ({ city, showBackBu
           )
         }
         <h1>
-          <span>Weather Report</span>
-          <span className="separator">{city ? ' -' : ''}</span>
-          <span>{city ? ` ${city}` : ''}</span>
+          Weather Report
         </h1>
       </div>
       <div className="right">

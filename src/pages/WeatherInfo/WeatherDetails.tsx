@@ -2,22 +2,22 @@ import React, { FunctionComponent } from 'react';
 import { Weather } from '../../shared/interfaces';
 
 interface Props {
-  weather: Weather | undefined
+  weather: Weather
 }
 
 const WeatherDetails: FunctionComponent<Props> = ({ weather }) => {
   const weatherInfo = [
     {
       label: 'Precipitation',
-      value: weather?.precipitation && `${weather?.precipitation}%`,
+      value: weather.precipitation && `${weather?.precipitation}%`,
     },
     {
       label: 'Humidity',
-      value: weather?.humidity && `${weather?.humidity}%`,
+      value: weather.humidity && `${weather?.humidity}%`,
     },
     {
       label: 'Wind',
-      value: weather?.windSpeed && `${weather?.windSpeed} km/h`,
+      value: weather.windSpeed && `${weather?.windSpeed} km/h`,
     },
   ];
 
@@ -26,7 +26,7 @@ const WeatherDetails: FunctionComponent<Props> = ({ weather }) => {
       <div className="title">
         <img src={weather?.imageSource} alt="" />
         <span className="temperature">
-          {weather?.temperature}
+          {weather.temperature}
           <sup>°C</sup>
         </span>
       </div>

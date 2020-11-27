@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useState } from 'react';
-import debounce from 'debounce-promise';
 
 import WeatherReport from './WeatherReport';
 import useCity from '../../shared/useCity';
@@ -47,9 +46,7 @@ const Home: FunctionComponent = () => {
   if (citiesError || weatherError) {
     const errorMessage = citiesError?.message || weatherError?.message || '';
     if (errorMessage) {
-      debounce(() => {
-        showNotification(errorMessage, 'error');
-      }, 300)();
+      showNotification(errorMessage, 'error');
     }
   }
 

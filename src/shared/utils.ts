@@ -1,4 +1,8 @@
 export const fetcher = async (input: RequestInfo, init?: RequestInit | undefined) => {
+  if (!input) {
+    return undefined;
+  }
+
   const response = await fetch(input, init);
   const result = await response.json();
   if(response.status < 200 || response.status >= 300) {
@@ -8,8 +12,8 @@ export const fetcher = async (input: RequestInfo, init?: RequestInit | undefined
 };
 
 export const compareCityNames = (str1: string, str2: string) => {
-  const arr1 = str1.toLocaleLowerCase().replace('new ', 'new#').split(' ');
-  const arr2 = str2.toLocaleLowerCase().replace('new ', 'new#').split(' ');
+  const arr1 = str1.toLocaleLowerCase().replace(/^$new /i, 'new#').split(' ');
+  const arr2 = str2.toLocaleLowerCase().replace(/^$new /i, 'new#').split(' ');
 
   return arr1.every(item => arr2.includes(item)) || arr2.every(item => arr1.includes(item));
 }

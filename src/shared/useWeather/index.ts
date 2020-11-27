@@ -2,6 +2,7 @@ import useSWR from 'swr';
 
 import { Weather } from '../interfaces';
 import { BASE_URL, WEATHER_STACK_API_KEY } from '../../config';
+import { compareCityNames } from '../utils';
 
 interface WeatherResponse {
   location: {
@@ -52,8 +53,8 @@ const useWeather = ({ cityName }: Props) => {
     (() => {
       if (Array.isArray(cityName)) {
         return cityName.length > 0
-          ? `${BASE_URL.WEATHER_SERVICE}?access_key=${WEATHER_STACK_API_KEY}&query=${cityName.join(';')}`
-          : null
+        ? `${BASE_URL.WEATHER_SERVICE}?access_key=${WEATHER_STACK_API_KEY}&query=${cityName.join(';')}`
+        : null
       }
       return `${BASE_URL.WEATHER_SERVICE}?access_key=${WEATHER_STACK_API_KEY}&query=${cityName}`
     })(),
@@ -83,20 +84,24 @@ const useWeather = ({ cityName }: Props) => {
     } else {
       const { data } : WeatherResponseSingular = response;
       if (data) {
-        weather = {
-          title: data.location.name || cityName as string,
-          temperature: data.current.temperature || 0,
-          precipitation: data.current.precip || 0,
-          humidity: data.current.humidity || 0,
-          windSpeed: data.current.wind_speed || 0,
-          imageSource: data.current.weather_icons[0] || '',
-        };
+        if (typeof cityName === 'string' && !compareCityNames(data.location.name, cityName)) {
+          weather = undefined;
+        } else {
+          weather = {
+            title: data.location.name,
+            temperature: data.current.temperature,
+            precipitation: data.current.precip,
+            humidity: data.current.humidity,
+            windSpeed: data.current.wind_speed,
+            imageSource: data.current.weather_icons[0],
+          };
+        }
       }
     }
   }
 
   const returnData: WeatherData  = {
-    loading: !_error && !(weather || (weatherCollection && weatherCollection.length > 0)),
+    loading: !_error && !response.data,
     error: _error,
   }
 

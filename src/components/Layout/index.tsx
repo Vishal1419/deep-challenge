@@ -9,7 +9,6 @@ import { withRouter } from 'react-router';
 
 interface Props {
   className?: string;
-  city?: string;
   children: ReactNode | ReactNode[];
   showHeaderBackButton?: boolean
 }
@@ -23,12 +22,12 @@ interface EnhancedProps {
 }
 
 const Layout: FunctionComponent<Props & EnhancedProps> = ({
-  className, city, children,
+  className, children,
   showHeaderBackButton, match,
 }) => (
   <div className={cx('layout', className)}>
     <ErrorBoundary>
-      <PageHeader city={city} showBackButton={showHeaderBackButton} />
+      <PageHeader showBackButton={showHeaderBackButton} />
     </ErrorBoundary>
     <ErrorBoundary key={match.params.cityName}>
       <PageContent>

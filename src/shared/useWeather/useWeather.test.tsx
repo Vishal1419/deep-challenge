@@ -95,7 +95,7 @@ it('should transform received data correctly when single city is passed as strin
     </SWR.SWRConfig>
   );
 
-  const cityName = 'tokyo';
+  const cityName = 'new york';
   const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
 
   const { weather: _weather } = result.current;
@@ -122,7 +122,7 @@ it('should transform received data correctly when single city is passed as array
     </SWR.SWRConfig>
   );
 
-  const cityName = ['tokyo'];
+  const cityName = ['new york'];
   const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
 
   const { weather: _weather } = result.current;
@@ -149,7 +149,7 @@ it('should transform received data correctly when multiple cities are passed', a
     </SWR.SWRConfig>
   );
 
-  const cityName = ['tokyo', 'new york'];
+  const cityName = ['new york', 'tokyo'];
   const { result, waitForNextUpdate } = renderHook(() => useWeather({ cityName }), { wrapper });
   
   const { weatherCollection: _weatherCollection } = result.current;

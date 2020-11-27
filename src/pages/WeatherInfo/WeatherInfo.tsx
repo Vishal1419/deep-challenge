@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router';
-import debounce from 'debounce-promise';
 
 import WeatherDetails from './WeatherDetails';
 import UserDetails from './UserDetails';
@@ -23,12 +22,11 @@ interface EnhancedProps {
 
 const WeatherInfo: FunctionComponent<Props & EnhancedProps> = ({ match }) => {
   const { cityName } = match.params;
-  const { weather, loading, error } = useWeather({ cityName });
+  const response = useWeather({ cityName });
+  const { weather, loading, error } = response;
 
   if (error) {
-    debounce(() => {
-      showNotification(error.message, 'error');
-    }, 300)();
+    showNotification(error.message, 'error');
   }
 
   if(!loading && !weather) {
@@ -36,7 +34,7 @@ const WeatherInfo: FunctionComponent<Props & EnhancedProps> = ({ match }) => {
   }
 
   return (
-    <Loader loading={loading}>
+    <Loader loading={loading} renderChildren={false}>
       <div className="weather-info">
         <div className="weather-info-title">
           <h1>
