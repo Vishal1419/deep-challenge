@@ -1,0 +1,43 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 0;
+  .left {
+    .back {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      .back-icon {
+        transform: rotateY(180deg);
+        margin-right: 1rem;
+        fill: $accent-color;
+      }
+      .link {
+        color: $accent-color;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 500;
+        letter-spacing: 1.1px;
+      }
+    }
+    h1 {
+      margin: 0;
+    }
+  }
+  @include mobile {
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    margin: 1rem 0;
+    .left {
+      margin-bottom: 0.5rem;
+      h1 {
+        text-align: center;
+      }
+    }
+    .right {
+      margin-top: 0.5rem;
+    }
+  }
+}

@@ -1,0 +1,8 @@
+.error-boundary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $error-color;
+  height: 100%;
+  background-color: $accent-light;
+}

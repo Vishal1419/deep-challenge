@@ -1,0 +1,37 @@
+.weather-details {
+  .title {
+    display: flex;
+    align-items: center;
+    .temperature {
+      margin-left: 2rem;
+      font-size: 4rem;
+      font-weight: 600;
+      sup {
+        font-size: 1rem;
+        font-weight: 400;
+        position: relative;
+        top: -1rem;
+      }
+    }
+  }
+  .info {
+    margin-top: 2rem;
+    table {
+      tbody {
+        tr {
+          td {
+            padding-bottom: 0.25rem;
+            &.label {
+              color: rgba($text-color, 0.6);
+            }
+            &.value {
+              padding-left: 1rem;
+              color: $text-color;
+              white-space: nowrap;
+            }
+          }
+        }
+      }
+    }
+  }
+}
