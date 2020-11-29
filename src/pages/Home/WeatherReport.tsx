@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Detector } from 'react-detect-offline';
 
 import Favorite from '../../components/Favorite';
 import Button from '../../components/Button';
@@ -111,7 +112,7 @@ const WeatherReport: FunctionComponent<Props> = ({
                 onCancel={() => close()}
                 onConfirm={() => handleRemoveCity(close, name)}
               >
-                {`This operation will delete ${title} from Weather Report. \n Are you sure you want to delete it?`}
+                {`This operation will delete ${title} permanently from Weather Report. There is no way back to get it. \n Are you sure you want to delete it?`}
               </ConfirmationDialog>
             )
           }
@@ -125,9 +126,11 @@ const WeatherReport: FunctionComponent<Props> = ({
     return (
       <div className="no-data">
         <span>You have removed all the cities.</span>
-        <Button onClick={handleFetchNewCities}>
-          Fetch new cities
-        </Button>
+        <Detector render={({ online }) => (
+          <Button onClick={handleFetchNewCities} disabled={!online}>
+            Fetch new cities
+          </Button>
+        )} />
       </div>
     );
   }

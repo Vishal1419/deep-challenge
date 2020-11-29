@@ -10,12 +10,14 @@ import './assets/styles/app.scss';
 import Routes from './Routes';
 import Container from './components/Container';
 import ErrorBoundary from './components/ErrorBoundary';
+import { readFromStorage } from './shared/storage';
 
 const queryClient = new QueryClient();
 
 function App() {
   useEffect(() => {
     ReactModal.setAppElement('#root');
+    readFromStorage(queryClient);
   }, []);
 
   return (

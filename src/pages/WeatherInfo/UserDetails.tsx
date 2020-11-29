@@ -4,7 +4,7 @@ import { Prompt } from 'react-router-dom';
 import Button from '../../components/Button';
 import Favorite from '../../components/Favorite';
 import Input from '../../components/Input';
-import { getUserData, saveUserData } from '../../shared/actions';
+import { getRemovedCities, getUserData, saveUserData } from '../../shared/actions';
 import { showNotification } from '../../shared/notifier';
 
 interface Props {
@@ -55,6 +55,8 @@ const UserDetails: FunctionComponent<Props> = ({ cityName }) => {
     showNotification(checked ? 'Marked as favorite!' : 'Removed from favorites!', 'success', 2000);
   };
 
+  const isCityRemoved = getRemovedCities().includes(cityName);
+
   return (
     <div className="user-details">
       <form onSubmit={handleSubmit}>
@@ -75,9 +77,10 @@ const UserDetails: FunctionComponent<Props> = ({ cityName }) => {
           </Button>
           <Favorite
             name="favoriteCity"
-            checked={isFavorite}
+            checked={isCityRemoved ? false : isFavorite}
             onChange={handleIsFavoriteChange}
             label={isFavorite ? 'Remove from Favorites' : 'Mark as Favorite' }
+            disabled={isCityRemoved}
           />
         </div>
       </form>

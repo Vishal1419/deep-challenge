@@ -8,12 +8,20 @@
     min-width: 15rem;
     max-width: 25rem;
     box-shadow: none;
-    cursor: pointer;
+    cursor: text;
+    pointer-events: all !important;
+    &:hover {
+      border-color: $accent-color;
+    }
     &.react-select__control--is-focused {
       border-color: $accent-color;
     }
     &.react-select__control--is-disabled {
       cursor: not-allowed;
+      border-color: $disabled-light;
+      &:hover {
+        border-color: $disabled-light;
+      }
     }
     .react-select__value-container {
       > input[readonly] {

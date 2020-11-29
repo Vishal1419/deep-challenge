@@ -12,6 +12,15 @@
   .favorite-visuals {
     display: flex;
     align-items: baseline;
+    &.disabled {
+      cursor: not-allowed;
+      .favorite-label {
+        color: $disabled-light;
+      }
+      .icon {
+        stroke: $disabled-light;
+      }
+    }
     .favorite-label {
       user-select: none;
       font-size: 1rem;

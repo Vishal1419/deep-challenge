@@ -4,6 +4,7 @@ import { ValueType } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import debounce from 'debounce-promise';
 import { compose } from 'recompose';
+import { Detector } from 'react-detect-offline';
 
 import { ReactComponent as ChevronRightIcon } from '../../assets/icons/chevron-right.svg';
 import { uniqBy } from '../../shared/utils';
@@ -71,15 +72,20 @@ const PageHeader: FunctionComponent<Props & EnhancedProps> = ({ showBackButton =
         </h1>
       </div>
       <div className="right">
-        <AsyncSelect
-          cacheOptions
-          loadOptions={loadCities}
-          className="react-select"
-          classNamePrefix="react-select"
-          value={selectedCity}
-          onChange={selectCity}
-          placeholder="Search..."
-          noOptionsMessage={({ inputValue }) => inputValue ? `No match found for ${inputValue}` : 'Start typing to search'}
+        <Detector
+          render={({ online }) => (
+            <AsyncSelect
+              cacheOptions
+              loadOptions={loadCities}
+              className="react-select"
+              classNamePrefix="react-select"
+              value={selectedCity}
+              onChange={selectCity}
+              placeholder="Search..."
+              noOptionsMessage={({ inputValue }) => inputValue ? `No match found for ${inputValue}` : 'Start typing to search'}
+              isDisabled={!online}
+            />
+          )}
         />
       </div>
     </section>

@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import { City } from '../interfaces';
 import { fetcher } from '../utils';
 import { BASE_URL } from '../../config';
+import { writeToStorage } from '../storage';
 
 export type SortType = 'population';
 
@@ -38,7 +39,18 @@ const fetchCities = async ({ rows, query, sort, exclude }: Props): Promise<Citie
 };
 
 const useCity = ({ rows, query, sort, exclude }: Props) => {
-  const { data, isLoading, isError, error } = useQuery(['cities', { rows, query, sort, exclude }], () => fetchCities({ rows, query, sort, exclude }));
+  const queryKey = ['cities', { rows, query, sort, exclude }];
+  const { data, isLoading, isError, error } = useQuery(
+    queryKey,
+    () => fetchCities({ rows, query, sort, exclude }),
+    {
+      cacheTime: 86400000,
+      staleTime: 7200000,
+      refetchOnWindowFocus: false,
+      retry: 0,
+      onSuccess: (data) => writeToStorage(JSON.stringify(queryKey), data),
+    }
+  );
   const cities: City[] = data?.records.map(record => ({ name: record.fields.city, title: record.fields.accentcity })) || [];
   return { cities, isLoading, isError, error: error as Error };
 };

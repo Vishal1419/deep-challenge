@@ -9,11 +9,12 @@ interface Props {
   label?: ReactNode;
   checked: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  disabled?: boolean;
 }
 
 const Favorite: FunctionComponent<Props> = ({
   id, name, label,
-  checked, onChange,
+  checked, onChange, disabled
 }) => (
   <>
     <label htmlFor={id || name} className="favorite-container">
@@ -24,8 +25,9 @@ const Favorite: FunctionComponent<Props> = ({
         type="checkbox"
         checked={checked}
         onChange={onChange}
+        disabled={disabled}
       />
-      <div className="favorite-visuals">
+      <div className={cx('favorite-visuals', { disabled })}>
         <span className="favorite-label">{label}</span>
         <HeartIcon className={cx('icon', { checked })} />
       </div>

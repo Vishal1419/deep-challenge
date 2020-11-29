@@ -3,6 +3,7 @@ import { useQueries } from 'react-query';
 import { Weather } from '../interfaces';
 import { compareCityNames, fetcher } from '../utils';
 import { BASE_URL, WEATHER_STACK_API_KEY } from '../../config';
+import { writeToStorage } from '../storage';
 
 export type SortType = 'population';
 
@@ -45,10 +46,17 @@ const fetchWeather = async (cityName: string): Promise<WeatherResponse> => {
 
 const useWeather = ({ cityNames }: Props) => {
   const weatherQueries = useQueries(
-    cityNames.map(cityName => ({
-      queryKey: ['city', cityName],
-      queryFn: () => fetchWeather(cityName),
-    }))
+    cityNames.map(cityName => {
+      const queryKey = ['city', cityName];
+      return {
+        queryKey: queryKey,
+        queryFn: () => fetchWeather(cityName),
+        cacheTime: 86400000,
+        staleTime: 600000,
+        retry: 0,
+        onSuccess: (data) => writeToStorage(JSON.stringify(queryKey), data),
+      };
+    })
   )
 
   const weatherCollection: Weather[] = weatherQueries
