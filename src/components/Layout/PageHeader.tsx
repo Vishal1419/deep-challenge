@@ -36,7 +36,7 @@ interface Option {
 }
 
 const PageHeader: FunctionComponent<Props & EnhancedProps> = ({ showBackButton = false, history }) => {
-  const [selectedCity, setSelectedCity] = useState<ValueType<Option>>(null);
+  const [selectedCity] = useState<ValueType<Option>>(null);
 
   const loadCities = debounce(
     async (input: string) => {
