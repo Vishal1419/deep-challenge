@@ -13,3 +13,12 @@ body {
 #root, #root > .App, #root > .App > .container {
   height: 100%;
 }
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  line-height: 2rem;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
