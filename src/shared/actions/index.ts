@@ -34,17 +34,26 @@ export const getRemovedCities = () => {
 };
 
 export const removeCity = (name: string) => {
+  let restoredCities = getRestoredCities();
+  restoredCities = restoredCities.filter(city => city !== name);
+  localStorage.setItem('restored-cities', JSON.stringify(restoredCities));
   const removedCities = getRemovedCities();
   if (!removedCities.includes(name)) removedCities.push(name);
   localStorage.setItem('removed-cities', JSON.stringify(removedCities));
-  return removedCities;
 };
+
+export const getRestoredCities = () => {
+  const restoredCities: string[] = JSON.parse(localStorage.getItem('restored-cities') || '[]');
+  return restoredCities;
+}
 
 export const restoreCity = (name: string) => {
   let removedCities = getRemovedCities();
   removedCities = removedCities.filter(city => city !== name);
   localStorage.setItem('removed-cities', JSON.stringify(removedCities));
-  return removedCities;
+  let restoredCities = getRestoredCities();
+  if (!restoredCities.includes(name)) restoredCities.push(name);
+  localStorage.setItem('restored-cities', JSON.stringify(restoredCities));
 };
 
 export const getExcludedCities = () => {

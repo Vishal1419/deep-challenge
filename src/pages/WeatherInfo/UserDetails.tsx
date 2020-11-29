@@ -4,7 +4,7 @@ import { Prompt } from 'react-router-dom';
 import Button from '../../components/Button';
 import Favorite from '../../components/Favorite';
 import Input from '../../components/Input';
-import { getRemovedCities, getUserData, saveUserData } from '../../shared/actions';
+import { getRemovedCities, getUserData, restoreCity, saveUserData } from '../../shared/actions';
 import { showNotification } from '../../shared/notifier';
 
 interface Props {
@@ -15,6 +15,7 @@ const UserDetails: FunctionComponent<Props> = ({ cityName }) => {
   const [notes, setNotes] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [, forceUpdate] = useState(false);
 
   useEffect(() => {
     const initialValues = getUserData(cityName);
@@ -48,6 +49,12 @@ const UserDetails: FunctionComponent<Props> = ({ cityName }) => {
     setHasUnsavedChanges(false);
   };
 
+  const handleRestoreCity = () => {
+    restoreCity(cityName);
+    showNotification('City Restored!', 'success', 3000);
+    forceUpdate(prevValue => !prevValue);
+  }
+
   const handleIsFavoriteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     saveUserData({ cityName, isFavorite: checked, notes });
@@ -75,13 +82,20 @@ const UserDetails: FunctionComponent<Props> = ({ cityName }) => {
           <Button type="submit" onClick={() => {}}>
             Save
           </Button>
-          <Favorite
-            name="favoriteCity"
-            checked={isCityRemoved ? false : isFavorite}
-            onChange={handleIsFavoriteChange}
-            label={isFavorite ? 'Remove from Favorites' : 'Mark as Favorite' }
-            disabled={isCityRemoved}
-          />
+          {
+            isCityRemoved
+              ? (
+                <Button onClick={handleRestoreCity}>Restore</Button>
+              )
+              : (
+                <Favorite
+                  name="favoriteCity"
+                  checked={isFavorite}
+                  onChange={handleIsFavoriteChange}
+                  label={isFavorite ? 'Remove from Favorites' : 'Mark as Favorite' }
+                />
+              )
+          }
         </div>
       </form>
       <Prompt
