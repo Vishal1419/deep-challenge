@@ -6,7 +6,7 @@ import { showNotification } from '../../shared/notifier';
 import useCity from '../../shared/useCity';
 import useWeather from '../../shared/useWeather';
 
-export const PAGE_SIZE = 2;
+export const PAGE_SIZE = 15;
 
 const Home: FunctionComponent = () => {
   const [, forceUpdate] = useState(false);

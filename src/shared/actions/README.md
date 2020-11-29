@@ -58,7 +58,7 @@ ___
   </tr>
   <tr>
     <th>operation</th>
-    <td>Gets all items from local-storage with key <code>user-data</code> and finds the item with <code>data.cityName</code> from those items. If found, <strong>modifies that item</strong> otherwise <strong>adds new item</strong> to the items array. Then saves it back to local-storage.</td>
+    <td>Gets all items from local-storage with key <code>user-data</code> and finds the item with <code>data.cityName</code> from those items. If found, <strong>modifies that item</strong> otherwise <strong>adds new item</strong> to the items array. If the item is not favorite and there are no notes, then that item is remoived and Then saves the list back to local-storage.</td>
   </tr>
 </table>
 
@@ -100,11 +100,34 @@ ___
   </tr>
   <tr>
     <th>returnType</th>
+    <td>void</td>
+  </tr>
+  <tr>
+    <th>operation</th>
+    <td>Gets all items from local-storage with key <code>restored-cities</code> and <strong>removes item from the array</strong>, then save array to local storage.<br />Gets all items from local-storage with key <code>removed-cities</code> and checks for item existance. If <strong>not found</strong>, then <strong>adds it to the array</strong>, save array to local storage.</td>
+  </tr>
+</table>
+
+<br />
+<br />
+
+___
+
+<br />
+
+## getRestoredCities
+<table>
+  <tr>
+    <th>parameters</th>
+    <td>-</td>
+  </tr>
+  <tr>
+    <th>returnType</th>
     <td>string[]</td>
   </tr>
   <tr>
     <th>operation</th>
-    <td>Gets all items from local-storage with key <code>removed-cities</code> and checks for item existance. If <strong>not found</strong>, then <strong>adds it to the array</strong>, save array to local storage and returns it.</td>
+    <td>Gets all items from local-storage with key <code>restored-cities</code> and returns it.</td>
   </tr>
 </table>
 
@@ -123,10 +146,63 @@ ___
   </tr>
   <tr>
     <th>returnType</th>
+    <td>void</td>
+  </tr>
+  <tr>
+    <th>operation</th>
+    <td>Gets all items from local-storage with key <code>removed-cities</code> and <strong>removes item from the array</strong>, then save array to local storage.<br />Gets all items from local-storage with key <code>restored-cities</code> and checks for item existance. If <strong>not found</strong>, then <strong>adds it to the array</strong>, save array to local storage.</td>
+  </tr>
+</table>
+
+<br />
+<br />
+
+___
+
+<br />
+
+## getExcludedCities
+<table>
+  <tr>
+    <th>parameters</th>
+    <td>-</td>
+  </tr>
+  <tr>
+    <th>returnType</th>
     <td>string[]</td>
   </tr>
   <tr>
     <th>operation</th>
-    <td>Gets all items from local-storage with key <code>user-data</code> and filters items by name. save the filtered array to local storage and returns it.</td>
+    <td>Gets all items from local-storage with key <code>excluded-cities</code> and returns it.</td>
   </tr>
 </table>
+
+<br />
+<br />
+
+___
+
+<br />
+
+## updateExcludedCities
+<table>
+  <tr>
+    <th>parameters</th>
+    <td>-</td>
+  </tr>
+  <tr>
+    <th>returnType</th>
+    <td>string[]</td>
+  </tr>
+  <tr>
+    <th>operation</th>
+    <td>Gets all items from local-storage with key <code>removed-cities</code> and dumps it to <code>excluded-cities</code> in local-storage.</td>
+  </tr>
+</table>
+
+<br />
+<br />
+
+___
+
+<br />

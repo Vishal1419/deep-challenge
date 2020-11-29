@@ -26,7 +26,7 @@
 
 ### showNotification
 
-**returnValue type**: ReactText
+**returnValue type**: Promise<ReactText>
 
 \* indicates required fields
 
@@ -47,7 +47,7 @@
 
 |PropName | Default Value | Type | Description |
 |---------|---------------|-----------------|-------------|
-| toastId* | - | ReactText | Pass the id that is recieved when showNotification was called |
+| toastId* | - | Promise<ReactText> | Pass the promise that is recieved when showNotification was called |
 
 <br />
 <br />
