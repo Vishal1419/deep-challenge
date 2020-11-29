@@ -6,7 +6,7 @@ import WeatherInfo from './pages/WeatherInfo';
 import NotFound from './pages/NotFound';
 
 const Routes: FunctionComponent = () => (
-  <BrowserRouter basename={process.env.PUBLIC_URL}>
+  <BrowserRouter>
     <Switch>
       <Route exact path="/" component={Home} />
       <Route exact path="/:cityName" render={(props) => <WeatherInfo key={props.match.params.id} {...props} />} />
