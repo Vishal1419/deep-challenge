@@ -20,6 +20,14 @@ There are mainly two pages in the application:
 <br />
 <br />
 
+## Live app link
+
+<br />
+<br />
+<br />
+
+You can check the live app here: https://master--tender-pare-dd5b54.netlify.app/
+
 ## Some screenshots of the app
 
 Home Page

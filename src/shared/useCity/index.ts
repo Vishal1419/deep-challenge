@@ -23,7 +23,7 @@ interface CitiesResponse {
   }[]
 }
 
-const fetchCities = async ({ rows, query, sort, exclude }: Props): Promise<CitiesResponse> => {
+const fetchCities = async ({ rows, query, sort, exclude = [] }: Props): Promise<CitiesResponse> => {
   try {
     const params = [`rows=${rows}`];
     if (query) params.push(`q=${query}`);

@@ -33,6 +33,11 @@ export const getRemovedCities = () => {
   return removedCities;
 };
 
+export const getRestoredCities = () => {
+  const restoredCities: string[] = JSON.parse(localStorage.getItem('restored-cities') || '[]');
+  return restoredCities;
+};
+
 export const removeCity = (name: string) => {
   let restoredCities = getRestoredCities();
   restoredCities = restoredCities.filter(city => city !== name);
@@ -41,11 +46,6 @@ export const removeCity = (name: string) => {
   if (!removedCities.includes(name)) removedCities.push(name);
   localStorage.setItem('removed-cities', JSON.stringify(removedCities));
 };
-
-export const getRestoredCities = () => {
-  const restoredCities: string[] = JSON.parse(localStorage.getItem('restored-cities') || '[]');
-  return restoredCities;
-}
 
 export const restoreCity = (name: string) => {
   let removedCities = getRemovedCities();

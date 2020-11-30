@@ -150,34 +150,6 @@
     </tr>
     <tr>
       <td>
-        loading
-      </td>
-      <td>
-        false
-      </td>
-      <td>
-        boolean
-      </td>
-      <td>
-        It will decide to show a loader or not
-      </td>
-    </tr>
-    <tr>
-      <td>
-        noDataMessage
-      </td>
-      <td>
-        No data available
-      </td>
-      <td>
-        string
-      </td>
-      <td>
-        If items is empty, then message passed into this prop will be shown
-      </td>
-    </tr>
-    <tr>
-      <td>
         sitckyHeader
       </td>
       <td>

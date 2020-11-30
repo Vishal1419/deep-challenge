@@ -81,11 +81,18 @@ const useWeather = ({ cityNames }: Props) => {
       };
     });
 
-  const isLoading = weatherQueries.some(item => item.isLoading);
-  const isError = weatherQueries.some(item => item.isError);
-  const error = weatherQueries.find(item => item.error);
+    const isError = weatherQueries.some(item => item.isError);
+    const error = weatherQueries.find(item => item.error)?.error;
+    let isLoading = true;
+    if (isError || weatherCollection.length > 0) {
+      isLoading = weatherQueries.some(item => item.isLoading);
+    }
+    let data: Weather[] = [];
+    if(!isLoading) {
+      data = weatherCollection;
+    }
 
-  return { weatherCollection, isLoading, isError, error: (error as unknown) as Error };
+  return { weatherCollection: data, isLoading, isError, error: error as Error };
 };
 
 export default useWeather;

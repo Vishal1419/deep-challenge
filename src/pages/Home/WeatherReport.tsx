@@ -112,7 +112,7 @@ const WeatherReport: FunctionComponent<Props> = ({
                 onCancel={() => close()}
                 onConfirm={() => handleRemoveCity(close, name)}
               >
-                {`This operation will delete ${title} permanently from Weather Report. There is no way back to get it. \n Are you sure you want to delete it?`}
+                {`This operation will delete ${title} from Weather Report. \n Are you sure you want to delete it?`}
               </ConfirmationDialog>
             )
           }
@@ -136,7 +136,7 @@ const WeatherReport: FunctionComponent<Props> = ({
   }
 
   return (
-    <Table columns={columns} items={sortedItems} loading={loading} />
+    <Table columns={columns} items={sortedItems} />
   ); 
 };
 

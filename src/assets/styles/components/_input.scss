@@ -8,6 +8,7 @@
     color: $text-color;
     min-height: 2rem;
     resize: none;
+    font-family: $font-family;
     &:focus {
       outline: 1px solid $accent-color;
       outline-offset: -1px;

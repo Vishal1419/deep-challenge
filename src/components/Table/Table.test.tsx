@@ -82,44 +82,9 @@ it('sets class of the table element to a specified value', () => {
   expect(screen.getByTestId('table')).toHaveClass('hello');
 });
 
-it('shows loader when loading property is true', () => {
-  render(
-    <Table columns={columns} items={items} loading />
-  );
-  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
-});
-
-it('does not show loader when loading property is false', () => {
-  render(
-    <Table columns={columns} items={items} loading={false} />
-  );
-  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-});
-
-it('does not show loader when loading property is not supplied', () => {
-  render(
-    <Table columns={columns} items={items} />
-  );
-  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-});
-
-it('shows default no data message when noDataMessage is not passed in and number of items is 0', () => {
-  render(
-    <Table columns={columns} items={[]} />
-  );
-  expect(screen.getByText(/no data available/i)).toBeInTheDocument();
-});
-
-it('shows passed in noDataMessage when number of items is 0', () => {
-  render(
-    <Table columns={columns} items={[]} noDataMessage="No data passed!" />
-  );
-  expect(screen.getByText('No data passed!')).toBeInTheDocument();
-});
-
 it('sets sticky class on each cell of table header when stickyHeader is true', () => {
   render(
-    <Table columns={columns} items={[]} noDataMessage="No data passed!" />
+    <Table columns={columns} items={[]} />
   );
   const headerCells = document.querySelectorAll('th');
   headerCells.forEach((headerCell) => {
@@ -129,7 +94,7 @@ it('sets sticky class on each cell of table header when stickyHeader is true', (
 
 it('does not set sticky class on each cell of table header when stickyHeader is false', () => {
   render(
-    <Table columns={columns} items={[]} noDataMessage="No data passed!" />
+    <Table columns={columns} items={[]} />
   );
   const headerCells = document.querySelectorAll('th');
   headerCells.forEach((headerCell) => {

@@ -1,7 +1,9 @@
 import { UserData } from '../interfaces';
 import {
   getFavorites, getUserData, saveUserData,
-  getRemovedCities, removeCity, restoreCity,
+  getRemovedCities, removeCity,
+  restoreCity, getRestoredCities,
+  getExcludedCities, updateExcludedCities,
 } from './index';
 
 describe('getFavorites', () => {
@@ -192,72 +194,169 @@ describe('getRemovedCities', () => {
   });
 });
 
-describe('removeCity', () => {
-  const KEY = 'removed-cities';
+describe('getRestoredCities', () => {
+  const KEY = 'restored-cities';
   let VALUES: string[];
-  let ITEM: string;
 
   beforeEach(() => {
     VALUES = ['test1', 'test2'];
+  })
+
+  it('returns empty array when restored-cities does not exist in local storage', () => {
+    const restoredCities = getRestoredCities();
+    expect(restoredCities).toHaveLength(0);
+  });
+
+  it('returns restored-cities from local storage', () => {
+    localStorage.setItem(KEY, JSON.stringify(VALUES));
+    const restoredCities = getRestoredCities();
+    expect(restoredCities).toEqual(VALUES);
+  });
+});
+
+describe('removeCity', () => {
+  const KEY_REMOVED = 'removed-cities';
+  const KEY_RESTORED = 'restored-cities';
+  let VALUES_REMOVED: string[];
+  let VALUES_RESTORED: string[];
+  let ITEM: string;
+
+  beforeEach(() => {
+    VALUES_REMOVED = ['test1', 'test2'];
+    VALUES_RESTORED = ['test3', 'test4'];
+    ITEM = 'test5';
+  });
+
+  it('removes city from restored-cities before adding to removed-cities', () => {
     ITEM = 'test3';
+    localStorage.setItem(KEY_REMOVED, JSON.stringify(VALUES_REMOVED));
+    localStorage.setItem(KEY_RESTORED, JSON.stringify(VALUES_RESTORED));
+    removeCity(ITEM);
+    const restoredCities = getRestoredCities();
+    expect(restoredCities.includes(ITEM)).toBeFalsy();
   });
 
-  it('returns removed-cities after completing the operation', () => {
-    localStorage.setItem(KEY, JSON.stringify(VALUES));
-    const removedCities = removeCity(ITEM);
-    expect(removedCities).toEqual([...VALUES, ITEM]);
+  it('does not touch restored-cities when city is not present in restored-cities before adding to removed-cities', () => {
+    localStorage.setItem(KEY_REMOVED, JSON.stringify(VALUES_REMOVED));
+    localStorage.setItem(KEY_RESTORED, JSON.stringify(VALUES_RESTORED));
+    removeCity(ITEM);
+    const restoredCities = getRestoredCities();
+    expect(restoredCities).toEqual(VALUES_RESTORED);
   });
 
-  it('creates new array and adds city to that array and assigns to removed-cities and adds to localstorage when removed-cities does not exist in local storage', () => {
-    const removedCities = removeCity(ITEM);
-    expect(removedCities[0]).toEqual(ITEM);
-  });
-
-  it('does not add duplicates', () => {
-    ITEM = VALUES[0];
-    localStorage.setItem(KEY, JSON.stringify(VALUES));
-    const removedCities = removeCity(ITEM);
-    expect(removedCities).toHaveLength(VALUES.length);
-  });
-
-  it('adds item when item is not present', () => {
-    localStorage.setItem(KEY, JSON.stringify(VALUES));
-    const removedCities = removeCity(ITEM);
+  it('adds city to removed-cities', () => {
+    ITEM = 'test3';
+    localStorage.setItem(KEY_REMOVED, JSON.stringify(VALUES_REMOVED));
+    removeCity(ITEM);
+    const removedCities = getRemovedCities();
     expect(removedCities.includes(ITEM)).toBeTruthy();
+  });
+
+  it('does not add duplicate city to removed-cities', () => {
+    ITEM = 'test2';
+    localStorage.setItem(KEY_REMOVED, JSON.stringify(VALUES_REMOVED));
+    removeCity(ITEM);
+    const removedCities = getRemovedCities();
+    expect(removedCities).toEqual(VALUES_REMOVED);
+  });
+
+  it('creates a new array, adds city to it and saves that array to removed-cities when removed-cities is empty', () => {
+    ITEM = 'test1';
+    removeCity(ITEM);
+    const removedCities = getRemovedCities();
+    expect(removedCities).toEqual([ITEM]);
   });
 });
 
 describe('restoreCity', () => {
-  const KEY = 'removed-cities';
-  let VALUES: string[];
+  const KEY_REMOVED = 'removed-cities';
+  const KEY_RESTORED = 'restored-cities';
+  let VALUES_REMOVED: string[];
+  let VALUES_RESTORED: string[];
   let ITEM: string;
 
   beforeEach(() => {
-    VALUES = ['test1', 'test2'];
-    ITEM = VALUES[0];
+    VALUES_REMOVED = ['test1', 'test2'];
+    VALUES_RESTORED = ['test3', 'test4'];
+    ITEM = 'test5';
   });
 
-  it('returns removed-cities after completing the operation', () => {
-    localStorage.setItem(KEY, JSON.stringify(VALUES));
-    const removedCities = restoreCity(ITEM);
-    expect(removedCities).toEqual(VALUES.filter(value => value !== ITEM));
+  it('removes city from removed-cities before adding to restored-cities', () => {
+    ITEM = 'test1';
+    localStorage.setItem(KEY_REMOVED, JSON.stringify(VALUES_REMOVED));
+    localStorage.setItem(KEY_RESTORED, JSON.stringify(VALUES_RESTORED));
+    restoreCity(ITEM);
+    const removedCities = getRemovedCities();
+    expect(removedCities.includes(ITEM)).toBeFalsy();
   });
 
-  it('returns an empty array when removed-cities is not defined', () => {
-    const removedCities = restoreCity(ITEM);
-    expect(removedCities).toHaveLength(0);
+  it('does not touch removed-cities when city is not present in removed-cities before adding to restored-cities', () => {
+    localStorage.setItem(KEY_REMOVED, JSON.stringify(VALUES_REMOVED));
+    localStorage.setItem(KEY_RESTORED, JSON.stringify(VALUES_RESTORED));
+    restoreCity(ITEM);
+    const removedCities = getRemovedCities();
+    expect(removedCities).toEqual(VALUES_REMOVED);
   });
 
-  it('returns existing removed cities when city is not present in removed cities', () => {
+  it('adds city to restored-cities', () => {
+    ITEM = 'test1';
+    localStorage.setItem(KEY_RESTORED, JSON.stringify(VALUES_RESTORED));
+    restoreCity(ITEM);
+    const restoredCities = getRestoredCities();
+    expect(restoredCities.includes(ITEM)).toBeTruthy();
+  });
+
+  it('does not add duplicate city to restored-cities', () => {
     ITEM = 'test3';
-    localStorage.setItem(KEY, JSON.stringify(VALUES));
-    const removedCities = restoreCity(ITEM);
-    expect(removedCities).toEqual(VALUES);
+    localStorage.setItem(KEY_RESTORED, JSON.stringify(VALUES_RESTORED));
+    restoreCity(ITEM);
+    const restoredCities = getRestoredCities();
+    expect(restoredCities).toEqual(VALUES_RESTORED);
   });
 
-  it('returns all cities except the restored city when city is present in removed cities', () => {
+  it('creates a new array, adds city to it and saves that array to restored-cities when restored-cities is empty', () => {
+    restoreCity(ITEM);
+    const restoredCities = getRestoredCities();
+    expect(restoredCities).toEqual([ITEM]);
+  });
+});
+
+describe('getExlcudedCities', () => {
+  const KEY = 'excluded-cities';
+  let VALUES: string[];
+
+  beforeEach(() => {
+    VALUES = ['test1', 'test2'];
+  });
+
+  it('returns empty array when excluded-cities does not exist in local storage', () => {
+    const excludedCities = getExcludedCities();
+    expect(excludedCities).toHaveLength(0);
+  });
+
+  it('returns excluded-cities from local storage', () => {
     localStorage.setItem(KEY, JSON.stringify(VALUES));
-    const removedCities = restoreCity(ITEM);
-    expect(removedCities).toEqual(VALUES.filter(value => value !== ITEM));
+    const excludedCities = getExcludedCities();
+    expect(excludedCities).toEqual(VALUES);
+  });
+});
+
+describe('updateExcludedCities', () => {
+  const KEY_REMOVED = 'removed-cities';
+  const KEY_EXCLUDED = 'excluded-cities';
+  let VALUES_REMOVED: string[];
+  let VALUES_EXCLUDED: string[];
+
+  beforeEach(() => {
+    VALUES_REMOVED = ['test1', 'test2', 'test3', 'test4'];
+    VALUES_EXCLUDED = ['test1', 'test2'];
+  });
+
+  it('should blindly dump all the removed-cities to excluded-cities', () => {
+    localStorage.setItem(KEY_REMOVED, JSON.stringify(VALUES_REMOVED));
+    localStorage.setItem(KEY_EXCLUDED, JSON.stringify(VALUES_EXCLUDED));
+    updateExcludedCities();
+    const excludedCities = getExcludedCities();
+    expect(excludedCities).toEqual(VALUES_REMOVED);
   });
 });

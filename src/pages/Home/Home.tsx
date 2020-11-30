@@ -5,6 +5,7 @@ import { getExcludedCities, getFavorites, getRemovedCities, getRestoredCities, u
 import { showNotification } from '../../shared/notifier';
 import useCity from '../../shared/useCity';
 import useWeather from '../../shared/useWeather';
+import Loader from '../../components/Loader';
 
 export const PAGE_SIZE = 15;
 
@@ -26,21 +27,23 @@ const Home: FunctionComponent = () => {
   const favoriteCities = getFavorites().map(city => city.cityName);
 
   const {
-    weatherCollection, isLoading: weatherCollectionLoading,
+    weatherCollection, isLoading: weatherCollectionLoading = true,
     isError: weatherCollectionHasError, error: weatherCollectionError,
   } = useWeather({
-    cityNames: [
-      ...cities
-        .filter(city => {
-          if(removedCities.includes(city.name)) return false;
-          if(restoredCities.includes(city.name)) return false;
-          if(favoriteCities.includes(city.name)) return false;
-          return true;
-        })
-        .map(city => city.name),
-      ...restoredCities,
-      ...favoriteCities.filter(city => !(removedCities.includes(city) || restoredCities.includes(city))),
-    ]
+    cityNames: citiesLoading
+      ? []
+      : [
+        ...cities
+          .filter(city => {
+            if(removedCities.includes(city.name)) return false;
+            if(restoredCities.includes(city.name)) return false;
+            if(favoriteCities.includes(city.name)) return false;
+            return true;
+          })
+          .map(city => city.name),
+        ...restoredCities,
+        ...favoriteCities.filter(city => !(removedCities.includes(city) || restoredCities.includes(city))),
+      ]
   });
 
   const handleFetchNewCities = () => {
@@ -51,24 +54,26 @@ const Home: FunctionComponent = () => {
   if (citiesHasError) {
     showNotification(citiesError.message, 'error');
   }
-
+  
   if (weatherCollectionHasError) {
     if (weatherCollectionError?.message) {
-      showNotification(weatherCollectionError.message);
+      showNotification(weatherCollectionError.message, 'error');
     }
   }
-  
-  if(!citiesLoading && cities.length === 0) {
+
+  if(!(citiesLoading || weatherCollectionLoading) && cities.length === 0) {
     return <div className="no-data">No data available!</div>
   }
   
   return (
     <div className="home">
-      <WeatherReport
-        weatherCollection={weatherCollection}
-        loading={citiesLoading || weatherCollectionLoading}
-        handleFetchNewCities={handleFetchNewCities}
-      />
+      <Loader loading={citiesLoading || weatherCollectionLoading}>
+        <WeatherReport
+          weatherCollection={weatherCollection}
+          loading={citiesLoading || weatherCollectionLoading}
+          handleFetchNewCities={handleFetchNewCities}
+        />
+      </Loader>
     </div>
   )
 };
