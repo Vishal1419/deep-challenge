@@ -10,7 +10,7 @@
     }
     .weather-info-details {
       display: flex;
-      flex: 1;
+      flex: 1 1 auto;
       .weather-details-container {
         height: 100%;
         padding-right: 2rem;
@@ -50,7 +50,7 @@
           }
           .user-details-container {
             height: unset;
-            flex: 1;
+            flex: 1 1 auto;
             background-color: $accent-light;
             padding-left: 0;
             padding: 1rem;

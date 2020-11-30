@@ -1,6 +1,7 @@
 .button {
   cursor: pointer;
   background-color: transparent;
+  border: 0; /* ie-11 */
   border: unset;
   border-radius: 0.25rem;
   padding: 0.5rem 1rem;

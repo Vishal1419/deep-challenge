@@ -5,13 +5,13 @@
     display: flex;
     flex-direction: column;
     .notes-container {
-      flex: 1;
+      flex: 1 1 auto;
       label {
         height: 100%;
         display: flex;
         flex-direction: column;
         .notes {
-          flex: 1;
+          flex: 1 1 auto;
         }
       }
     }
