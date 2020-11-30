@@ -40,11 +40,12 @@
     "@types/react-select": "^3.0.26",
     "@types/recompose": "^0.30.7",
     "jest-environment-jsdom-sixteen": "^1.0.3",
-    "msw": "^0.22.3"
+    "msw": "^0.22.3",
+    "workbox": "0.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && workbox injectManifest ./workbox-config.js",
     "test": "react-scripts test --env=jsdom-sixteen",
     "eject": "react-scripts eject"
   },
