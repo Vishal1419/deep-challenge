@@ -28,6 +28,14 @@ You can check the live app here: https://master--tender-pare-dd5b54.netlify.app/
 <br />
 <br />
 
+## Video explaining the features of this project
+
+https://drive.google.com/file/d/1Emir0kX6pbOJZZlp-6L0r95YKZuuasAX/view?usp=sharing
+
+<br />
+<br />
+<br />
+
 ## Some screenshots of the app
 
 Home Page
