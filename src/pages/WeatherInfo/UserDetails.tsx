@@ -82,20 +82,22 @@ const UserDetails: FunctionComponent<Props> = ({ cityName }) => {
           <Button type="submit" onClick={() => {}}>
             Save
           </Button>
-          {
-            isCityRemoved
-              ? (
-                <Button onClick={handleRestoreCity}>Restore</Button>
-              )
-              : (
-                <Favorite
-                  name="favoriteCity"
-                  checked={isFavorite}
-                  onChange={handleIsFavoriteChange}
-                  label={isFavorite ? 'Remove from Favorites' : 'Mark as Favorite' }
-                />
-              )
-          }
+          <div className="action">
+            {
+              isCityRemoved
+                ? (
+                  <Button onClick={handleRestoreCity}>Restore</Button>
+                )
+                : (
+                  <Favorite
+                    name="favoriteCity"
+                    checked={isFavorite}
+                    onChange={handleIsFavoriteChange}
+                    label={isFavorite ? 'Remove from Favorites' : 'Mark as Favorite' }
+                  />
+                )
+            }
+          </div>
         </div>
       </form>
       <Prompt
