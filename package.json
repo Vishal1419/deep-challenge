@@ -41,7 +41,7 @@
     "@types/recompose": "^0.30.7",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "msw": "^0.22.3",
-    "workbox": "0.0.0"
+    "workbox-cli": "^5.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
