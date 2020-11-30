@@ -1,5 +1,6 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import 'isomorphic-fetch';
 import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query-devtools'
