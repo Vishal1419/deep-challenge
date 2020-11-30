@@ -12,7 +12,7 @@ There are mainly two pages in the application:
 - Restore cities that were removed previously
 - Favorite cities
 - Save notes for each city
-- Works on all devices
+- Fully responsive
 - Works online as well as offline
 
 
