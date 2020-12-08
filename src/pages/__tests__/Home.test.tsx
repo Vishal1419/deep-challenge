@@ -4,6 +4,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { BrowserRouter } from 'react-router-dom';
 import Dialog from 'react-modal';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import '@testing-library/jest-dom/extend-expect'
 
 import Home from '../Home';
@@ -11,10 +12,6 @@ import * as useCity from '../../shared/useCity';
 import * as useWeather from '../../shared/useWeather';
 import * as notificationHelpers from '../../shared/notifier';
 import { BASE_URL } from '../../config';
-import { compareCityNames } from '../../shared/utils';
-import { Weather } from '../../shared/interfaces';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { removeCity } from '../../shared/actions';
 
 let cities = {
   records: [

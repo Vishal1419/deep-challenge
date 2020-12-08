@@ -12,6 +12,7 @@ interface Props {
   query?: string;
   sort?: SortType;
   exclude?: string[];
+  enabled?: boolean;
 }
 
 interface CitiesResponse {
@@ -38,12 +39,13 @@ const fetchCities = async ({ rows, query, sort, exclude = [] }: Props): Promise<
   }
 };
 
-const useCity = ({ rows, query, sort, exclude }: Props) => {
+const useCity = ({ rows, query, sort, exclude, enabled = true }: Props) => {
   const queryKey = ['cities', { rows, query, sort, exclude }];
   const { data, isLoading, isError, error } = useQuery(
     queryKey,
     () => fetchCities({ rows, query, sort, exclude }),
     {
+      enabled,
       cacheTime: 86400000,
       staleTime: 7200000,
       refetchOnWindowFocus: false,

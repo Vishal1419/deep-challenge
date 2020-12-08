@@ -1,8 +1,5 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
-// custom adjustments
-
-
 // Cache page navigations (html) with a Network First strategy
 workbox.routing.registerRoute(
   // Check to see if the request is a navigation to a new page

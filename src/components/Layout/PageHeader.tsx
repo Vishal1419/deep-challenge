@@ -1,15 +1,13 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { ValueType } from 'react-select';
-import AsyncSelect from 'react-select/async';
-import debounce from 'debounce-promise';
+import Select, { ValueType } from 'react-select';
+import { useDebounce } from 'use-debounce';
 import { compose } from 'recompose';
 import { Detector } from 'react-detect-offline';
 
 import { ReactComponent as ChevronRightIcon } from '../../assets/icons/chevron-right.svg';
+import useCity from '../../shared/useCity';
 import { uniqBy } from '../../shared/utils';
-import { showNotification } from '../../shared/notifier';
-import { BASE_URL } from '../../config';
 
 interface Props {
   showBackButton?: boolean;
@@ -21,15 +19,6 @@ interface EnhancedProps {
   }
 }
 
-interface CitiesResponse {
-  records: {
-    fields: {
-      city: string;
-      accentcity: string;
-    }
-  }[]
-}
-
 interface Option {
   label: string;
   value: string;
@@ -37,20 +26,11 @@ interface Option {
 
 const PageHeader: FunctionComponent<Props & EnhancedProps> = ({ showBackButton = false, history }) => {
   const [selectedCity] = useState<ValueType<Option>>(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const loadCities = debounce(
-    async (input: string) => {
-      try {
-        const cities = await fetch(`${BASE_URL.CITIES_SERVICE}?dataset=worldcitiespop&rows=10&q=${input}`);
-        const citiesJson: CitiesResponse = await cities.json();
-        const _cities = citiesJson.records.map(record => ({ label: record.fields.accentcity, value: record.fields.city }));
-        return new Promise<Option[]>((resolve) => resolve(uniqBy(_cities, 'value')));
-      } catch (err) {
-        showNotification(err.message, 'error');
-      }
-    },
-    300
-  );
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const { cities, isLoading } = useCity({ rows: 10, query: debouncedSearchTerm[0], enabled: !!debouncedSearchTerm[0] });
+  const options = uniqBy(cities.map(city => ({ value: city.name, label: city.title })), 'value');
 
   const selectCity = (_city: ValueType<Option>) => {
     history.push(`/${Object(_city).value}`);
@@ -74,16 +54,24 @@ const PageHeader: FunctionComponent<Props & EnhancedProps> = ({ showBackButton =
       <div className="right">
         <Detector
           render={({ online }) => (
-            <AsyncSelect
-              cacheOptions
-              loadOptions={loadCities}
+            <Select
+              onInputChange={setSearchTerm}
+              options={options}
+              isLoading={isLoading || searchTerm !== debouncedSearchTerm[0]}
               className="react-select"
               classNamePrefix="react-select"
               value={selectedCity}
               onChange={selectCity}
               placeholder="Search..."
-              noOptionsMessage={({ inputValue }) => inputValue ? `No match found for ${inputValue}` : 'Start typing to search'}
-              isDisabled={!online}
+              noOptionsMessage={({ inputValue }) => {
+                if(inputValue) {
+                  if (!online) {
+                    return `You are offline, No match found for ${inputValue} in cache`
+                  }
+                  return `No match found for ${inputValue}`
+                }
+                return 'Start typing to search'
+              }}
             />
           )}
         />

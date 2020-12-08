@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { BrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import PageHeader from './PageHeader';
 import { BASE_URL } from '../../config';
@@ -50,10 +51,13 @@ afterEach(() => {
 afterAll(() => server.close());
 
 const renderPageHeader = (showBackButton?: boolean) => {
+  const queryClient = new QueryClient();
   render(
-    <BrowserRouter>
-      <PageHeader showBackButton={showBackButton} />
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <PageHeader showBackButton={showBackButton} />
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 
