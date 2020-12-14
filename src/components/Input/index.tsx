@@ -10,11 +10,12 @@ interface Props {
   value: string;
   onChange: React.ChangeEventHandler;
   rows?: number;
+  readOnly?: boolean;
 }
 
 const Input: FunctionComponent<Props> = ({
   id, name, label, type = 'text',
-  className, value, onChange, rows = 4
+  className, value, onChange, rows = 4, readOnly = false,
 }) => (
   <label className="textbox-container" htmlFor={id || name}>
     {label && <span className="label-text">{label}</span>}
@@ -29,6 +30,7 @@ const Input: FunctionComponent<Props> = ({
             value={value}
             onChange={onChange}
             rows={rows}
+            readOnly={readOnly}
           />
         )
         : (
@@ -40,6 +42,7 @@ const Input: FunctionComponent<Props> = ({
             className={cx('textbox', className)}
             value={value}
             onChange={onChange}
+            readOnly={readOnly}
           />
         )
     }

@@ -2,8 +2,9 @@ import React, { FunctionComponent } from 'react';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router';
 
+import WeatherHeader from './WeatherHeader';
 import WeatherDetails from './WeatherDetails';
-import UserDetails from './UserDetails';
+import NotesSection from './NotesSection';
 import useWeather from '../../shared/useWeather';
 import Loader from '../../components/Loader';
 import { showNotification } from '../../shared/notifier';
@@ -35,17 +36,13 @@ const WeatherInfo: FunctionComponent<Props & EnhancedProps> = ({ match }) => {
   return (
     <Loader loading={isLoading} renderChildren={false}>
       <div className="weather-info">
-        <div className="weather-info-title">
-          <h1>
-            {weatherCollection[0] && weatherCollection[0].title}
-          </h1>
-        </div>
-        <div className="weather-info-details">
+        <WeatherHeader weather={weatherCollection[0]} />
+        <div className="weather-info-content">
           <section className="weather-details-container">
             <WeatherDetails weather={weatherCollection[0]} />
           </section>
-          <section className="user-details-container">
-            <UserDetails cityName={cityName} />
+          <section className="notes-section-container">
+            <NotesSection cityName={cityName} />
           </section>
         </div>
       </div>
