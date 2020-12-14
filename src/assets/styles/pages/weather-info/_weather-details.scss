@@ -3,4 +3,7 @@
   grid-template-columns: auto auto;
   grid-gap: 2rem;
   align-items: initial;
+  @include mobile {
+    grid-template-columns: auto;
+  }
 }

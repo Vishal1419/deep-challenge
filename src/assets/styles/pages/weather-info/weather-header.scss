@@ -9,4 +9,12 @@
       margin: 0;
     }
   }
+  @include mobile {
+    flex-direction: column;
+    padding: 1rem;
+    background-color: $accent-light;
+    .title {
+      margin-bottom: 0.25rem;
+    }
+  }
 }

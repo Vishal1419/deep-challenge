@@ -30,30 +30,19 @@
       background-color: transparent;
       padding: 0;
       .weather-info {
-        .weather-info-title {
-          background-color: white;
-          padding: 1rem;
-          padding-bottom: 0;
-          h1 {
-            margin: 0;
-          }
-        }
-        .weather-info-details {
+        .weather-info-content {
+          margin-top: 1rem;
           flex-direction: column;
           .weather-details-container {
-            height: unset;
-            background-color: $accent-light;
-            padding-right: 0;
-            border-right: unset;
+            flex: unset;
+            background: $accent-light;
             padding: 1rem;
           }
-          .user-details-container {
-            height: unset;
-            flex: 1 1 auto;
-            background-color: $accent-light;
-            padding-left: 0;
-            padding: 1rem;
+          .notes-section-container {
+            flex: unset;
             margin-top: 1rem;
+            padding: 1rem;
+            background: $accent-light;
           }
         }
       }
