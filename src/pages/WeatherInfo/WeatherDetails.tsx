@@ -20,42 +20,42 @@ const WeatherDetails: FunctionComponent<Props> = ({ weather }) => {
     {
       Icon: <TemperatureIcon />,
       label: 'Temperature',
-      value: '30°C',
+      value: `${weather.temperature}°C`,
     },
     {
       Icon: <HumidityIcon />,
       label: 'Humidity',
-      value: (weather.humidity && `${weather.humidity}%`) || '0',
+      value: `${weather.humidity}%`,
     },
     {
       Icon: <PrecipitationIcon />,
       label: 'Precipitation',
-      value: (weather.precipitation && `${weather.precipitation}%`)  || '0',
+      value: `${weather.precipitation}%`,
     },
     {
       Icon: <CloudCoverIcon />,
       label: 'Cloud cover',
-      value: '75%',
+      value: `${weather.cloudCover}%`,
     },
     {
       Icon: <PressureIcon />,
       label: 'Pressure',
-      value: '1011',
+      value: `${weather.pressure} Pa`,
     },
     {
       Icon: <UVIndexIcon />,
       label: 'UV Index',
-      value: '6',
+      value: `${weather.uvIndex}`,
     },
     {
       Icon: <WindSpeedIcon />,
       label: 'Wind Speed',
-      value: '6km/h',
+      value: `${weather.windSpeed} km/h`,
     },
     {
       Icon: <WindDirectionIcon />,
       label: 'Wind Direction',
-      value: '350° N',
+      value: `${weather.windDegree}° ${weather.windDirection}`,
     },
   ];
 
@@ -64,7 +64,7 @@ const WeatherDetails: FunctionComponent<Props> = ({ weather }) => {
       {
         weatherInfo.map(info => (
           <WeatherCard {...info} />
-          ))
+        ))
       }
     </div>
   );

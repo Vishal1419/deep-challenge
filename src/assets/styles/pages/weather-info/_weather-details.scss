@@ -6,4 +6,7 @@
   @include mobile {
     grid-template-columns: auto;
   }
+  @include mobile {
+    grid-gap: unset;
+  }
 }

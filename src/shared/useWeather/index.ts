@@ -20,7 +20,11 @@ interface WeatherResponse {
     precip: number;
     humidity: number;
     wind_speed: number;
-    weather_icons: string[];
+    wind_dir: string;
+    wind_degree: number;
+    cloudcover: number;
+    uv_index: number;
+    pressure: number;
   }
 }
 
@@ -77,7 +81,11 @@ const useWeather = ({ cityNames }: Props) => {
         precipitation: current.precip,
         humidity: current.humidity,
         windSpeed: current.wind_speed,
-        imageSource: current.weather_icons[0],
+        windDirection: current.wind_dir,
+        windDegree: current.wind_degree,
+        cloudCover: current.cloudcover,
+        uvIndex: current.uv_index,
+        pressure: current.pressure,
       };
     });
 

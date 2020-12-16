@@ -25,4 +25,38 @@
       font-size: 1.5rem;
     }
   }
+  @include mobile {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid $border-color;
+    &:first-child {
+      padding-top: 0;
+    }
+    &:last-child {
+      padding-bottom: 0;
+      border: 0;
+    }
+    > svg {
+      width: 16px;
+      height: 16px;
+      border: 0;
+      padding: 0;
+      border-radius: 0;
+    }
+    .info {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-right: 0;
+      .label {
+        color: $text-color;
+        font-size: 1rem;
+        text-transform: none;
+        letter-spacing: normal;
+      }
+      .value {
+        font-size: 1rem;
+      }
+    }
+  }
 }

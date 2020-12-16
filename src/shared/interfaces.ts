@@ -16,5 +16,9 @@ export interface Weather {
   precipitation: number;
   humidity: number;
   windSpeed: number;
-  imageSource: string;
+  windDirection: string;
+  windDegree: number;
+  cloudCover: number;
+  uvIndex: number;
+  pressure: number;
 };
