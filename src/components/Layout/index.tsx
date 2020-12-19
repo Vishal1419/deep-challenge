@@ -43,8 +43,10 @@ const Layout: FunctionComponent<Props & EnhancedProps> = ({
     showNotification(WeatherError.message, 'error');
   }
 
-  if (weatherCollection[0]) {
-    history.push(`/${weatherCollection[0].title.toLowerCase()}`);
+  const { cityName } = match.params;
+  const myCityName = weatherCollection[0] && weatherCollection[0].title.toLowerCase();
+  if (myCityName && cityName !== myCityName) {
+    history.push(`/${myCityName}`);
   }
 
   return (
