@@ -12,6 +12,8 @@ export const fetcher = async (input: RequestInfo, init?: RequestInit | undefined
 };
 
 export const compareCityNames = (str1: string, str2: string) => {
+  if (str1.includes(',') || str2.includes(',')) return true;
+  
   const arr1 = str1.toLocaleLowerCase().replace(/^new /i, 'new#').split(' ');
   const arr2 = str2.toLocaleLowerCase().replace(/^new /i, 'new#').split(' ');
 

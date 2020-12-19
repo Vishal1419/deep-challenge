@@ -11,7 +11,6 @@ import 'react-block-ui/style.css';
 
 import './assets/styles/app.scss';
 import Routes from './Routes';
-import Container from './components/Container';
 import ErrorBoundary from './components/ErrorBoundary';
 import { readFromStorage } from './shared/storage';
 
@@ -24,19 +23,15 @@ function App() {
   }, []);
 
   return (
-    <>
-      <div className="App">
-        <ErrorBoundary>
-          <QueryClientProvider client={queryClient}>
-            <Container>
-              <ToastContainer />
-              <Routes />
-            </Container>
-            <ReactQueryDevtools />
-          </QueryClientProvider>
-        </ErrorBoundary>
-      </div>
-    </>
+    <div className="App">
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ToastContainer />
+          <Routes />
+          <ReactQueryDevtools />
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </div>
   );
 }
 

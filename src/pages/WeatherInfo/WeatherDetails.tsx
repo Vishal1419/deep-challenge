@@ -63,7 +63,7 @@ const WeatherDetails: FunctionComponent<Props> = ({ weather }) => {
     <div className="weather-details">
       {
         weatherInfo.map(info => (
-          <WeatherCard {...info} />
+          <WeatherCard key={info.label} {...info} />
         ))
       }
     </div>
