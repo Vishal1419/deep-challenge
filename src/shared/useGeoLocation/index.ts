@@ -40,7 +40,7 @@ const useGeoLocation = (localStorageKey = 'is-location-granted') => {
         setShouldRequestLocation(true);
       }
     }
-  }, []);
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     if(!('geolocation' in navigator)) {
@@ -57,7 +57,7 @@ const useGeoLocation = (localStorageKey = 'is-location-granted') => {
         { enableHighAccuracy: false, timeout: 10000, maximumAge: 18000000 },
       );
     }
-  }, [shouldRequestLocation]);
+  }, [shouldRequestLocation]); // eslint-disable-line
 
   return { loading, error, coords };
 };
