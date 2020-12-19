@@ -3,10 +3,8 @@
   grid-template-columns: auto auto;
   grid-gap: 2rem;
   align-items: initial;
-  @include mobile {
+  @include laptop {
     grid-template-columns: auto;
-  }
-  @include mobile {
     grid-gap: unset;
   }
 }

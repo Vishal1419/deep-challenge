@@ -25,6 +25,16 @@
     }
   }
 
+  @include laptop {
+    .weather-info {
+      .weather-info-content {
+        .weather-details-container {
+          flex: 1;
+        }
+      }
+    }
+  }
+
   @include mobile {
     .page-content {
       background-color: transparent;
