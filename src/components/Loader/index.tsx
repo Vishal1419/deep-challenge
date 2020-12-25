@@ -7,10 +7,12 @@ interface Props {
   size?: number | string;
   renderChildren?: boolean;
   message?: string;
+  [x: string]: unknown;
 };
 
-const Loader: FunctionComponent<Props> = ({ children, loading, size = 50, renderChildren = true, message = '' }) => (
+const Loader: FunctionComponent<Props> = ({ children, loading, size = 50, renderChildren = true, message = '', ...rest }) => (
   <BlockUI
+    {...rest}
     tag="div"
     className="loader"
     keepInView

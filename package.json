@@ -46,6 +46,7 @@
     "@types/recompose": "^0.30.7",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "msw": "^0.22.3",
+    "react-test-renderer": "^17.0.1",
     "workbox-cli": "^5.1.4"
   },
   "scripts": {

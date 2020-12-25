@@ -68,6 +68,8 @@ const NotesSection: FunctionComponent<Props> = ({ cityName }) => {
     const initialValues = getUserData(cityName);
     if (initialValues) {
       setNotes(initialValues.notes);
+    } else {
+      setNotes('');
     }
     setIsEditing(false);
     setHasUnsavedChanges(false);

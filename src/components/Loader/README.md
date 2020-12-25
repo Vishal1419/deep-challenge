@@ -25,6 +25,7 @@
 | loading* | - |  boolean | It will show a loader if loading is true, else it will display the content. |
 | size | 50 | number | It sets the height and width of the loader |
 | renderChildren | true | boolean | If true, it will show children while loading. Otherwise it will hide children while loading. In any case if loading is false, it will display children |
+| message | '' | string | Shows this message when loading |
 
 <br />
 <br />
@@ -38,3 +39,7 @@
 Loading
 
 ![Loading](README-assets/loader.png)
+
+Loading with message
+
+![Loading with Message](README-assets/loader-message.png)

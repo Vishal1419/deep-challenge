@@ -34,7 +34,7 @@ const WeatherInfo: FunctionComponent<Props & EnhancedProps> = ({ match }) => {
   }
 
   return (
-    <Loader loading={isLoading} renderChildren={false}>
+    <Loader loading={isLoading} renderChildren={false} data-testid="weather-loader">
       <div className="weather-info">
         <WeatherHeader weather={weatherCollection[0]} />
         <div className="weather-info-content">

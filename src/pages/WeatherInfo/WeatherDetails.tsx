@@ -34,7 +34,7 @@ const WeatherDetails: FunctionComponent<Props> = ({ weather }) => {
     },
     {
       Icon: <CloudCoverIcon />,
-      label: 'Cloud cover',
+      label: 'Cloud Cover',
       value: `${weather.cloudCover}%`,
     },
     {

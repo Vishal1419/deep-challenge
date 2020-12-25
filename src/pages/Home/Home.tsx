@@ -67,7 +67,7 @@ const Home: FunctionComponent = () => {
   
   return (
     <div className="home">
-      <Loader loading={citiesLoading || weatherCollectionLoading}>
+      <Loader loading={citiesLoading || weatherCollectionLoading} data-testid="home-loader">
         <WeatherReport
           weatherCollection={weatherCollection}
           loading={citiesLoading || weatherCollectionLoading}

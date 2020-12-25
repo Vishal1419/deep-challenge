@@ -97,6 +97,7 @@ afterAll(() => server.close());
 
 
 const renderHome = () => {
+  localStorage.setItem('is-location-granted', JSON.stringify(true));
   const queryClient = new QueryClient();
   const { container, ...rest } = render(
     <QueryClientProvider client={queryClient}>
@@ -111,14 +112,14 @@ const renderHome = () => {
 
 it('should show a loader initially', () => {
   renderHome();
-  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
+  expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'true');
 });
 
 it('should hide loader after data is fetched', async () => {
   renderHome();
-  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
+  expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'true');
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
 });
 
@@ -133,7 +134,7 @@ it('should fetch 15 largest cities by population', async () => {
     const useCitySpy = jest.spyOn(useCity, 'default');
     renderHome();
     await waitFor(() => {
-      expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+      expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
     });
     expect(useCitySpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -148,7 +149,7 @@ it('should not fetch weather data for removed cities', async () => {
   const useWeatherSpy = jest.spyOn(useWeather, 'default');
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   expect(useWeatherSpy).toHaveBeenCalledWith(
@@ -164,7 +165,7 @@ it('should render restored cities', async () => {
   const useWeatherSpy = jest.spyOn(useWeather, 'default');
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   expect(useWeatherSpy).toHaveBeenNthCalledWith(
@@ -182,7 +183,7 @@ it('should render favorite cities', async () => {
   const useWeatherSpy = jest.spyOn(useWeather, 'default');
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   expect(useWeatherSpy).toHaveBeenNthCalledWith(
@@ -196,7 +197,7 @@ it('should render favorite cities', async () => {
 it('should have cityName with link to details page, temperature, favorite unchecked and remove button on each row in alphabetical order', async () => {
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
   const tableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
   tableRows.forEach((row, index) => {
@@ -213,7 +214,7 @@ it('should have cityName with link to details page, temperature, favorite unchec
 it('should show a dialog on click of each remove button', async () => {
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
   const tableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
   tableRows.forEach((row, index) => {
@@ -230,7 +231,7 @@ it('should show a dialog on click of each remove button', async () => {
 it('should not remove city and should close the dialog on click of cancel button in dialog', async () => {
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
   const tableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
   tableRows.forEach((row, index) => {
@@ -252,7 +253,7 @@ it('should remove city and should close the dialog and should show a notificatio
   const notificationSpy = jest.spyOn(notificationHelpers, 'showNotification');
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
   const tableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
   for (let i = tableRows.length - 1; i >= 0; i--) {
@@ -275,7 +276,7 @@ it('should show remove city button even if city is favorite', async () => {
   localStorage.setItem('user-data', JSON.stringify(userData));
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
   const tableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
   tableRows.forEach((row, index) => {
@@ -290,7 +291,7 @@ it('should show remove city button even if city is favorite', async () => {
 it('should show fetch new cities button when all cities are removed', async () => {
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
   const tableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
   for (let i = tableRows.length - 1; i >= 0; i--) {
@@ -306,7 +307,7 @@ it('should show fetch new cities button when all cities are removed', async () =
 it('should fetch new cities on click of fetch new cities button', async () => {
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
   const tableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
   for (let i = tableRows.length - 1; i >= 0; i--) {
@@ -351,10 +352,10 @@ it('should fetch new cities on click of fetch new cities button', async () => {
 
   fireEvent.click(fetchNewCitiesButton);
 
-  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
+  expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'true');
   
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   const newTableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
@@ -403,7 +404,7 @@ it('sets data for next test cases', () => {
 it('should favorite a city and show a notification on click of favorite checkbox', async () => { 
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   expectedData.forEach(item => {
@@ -439,7 +440,7 @@ it('should unfavorite a city and show a notification on click of favorite checkb
 
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   _expectedData.forEach(item => {
@@ -466,7 +467,7 @@ it('should sort cities by favorite and then in alphabetical order', async () => 
   localStorage.setItem('user-data', JSON.stringify(userData));
   renderHome();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('home-loader')).toHaveAttribute('aria-busy', 'false');
   });
   const tableRows = screen.getByRole('table').querySelectorAll('tbody > tr');
   tableRows.forEach((row, index) => {

@@ -13,4 +13,26 @@ const localStorageMock = {
 
 (global as any).localStorage = localStorageMock;
 
-beforeEach(() => localStorage.clear());
+const mockGeolocation = {
+  getCurrentPosition: jest.fn()
+    .mockImplementation((success) => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(
+            success({
+              coords: {
+                latitude: 51.1,
+                longitude: 45.3
+              },
+            }),
+          );
+        }, 0);
+      });
+    }),
+};
+
+beforeEach(() => {
+  (global as any).navigator.geolocation = mockGeolocation;
+  (global as any).GeolocationPositionError = jest.fn();
+  localStorage.clear()
+});

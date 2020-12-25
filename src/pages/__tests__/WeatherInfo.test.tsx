@@ -10,13 +10,23 @@ import WeatherInfo from '../WeatherInfo';
 import * as notificationHelpers from '../../shared/notifier';
 import { BASE_URL } from '../../config';
 import { UserData, Weather } from '../../shared/interfaces';
-import { getRemovedCities, getRestoredCities, removeCity, saveUserData } from '../../shared/actions';
+import { getRemovedCities, getRestoredCities, getUserData, removeCity, saveUserData } from '../../shared/actions';
 
 let cityName = 'tokyo';
 
 let data = {
   location: { name: 'Tokyo' },
-  current: { temperature: 12, precip: 5, humidity: 20, wind_speed: 6, weather_icons: ['https://fake-host/image.png'] },
+  current: {
+    temperature: 12,
+    precip: 5,
+    humidity: 20,
+    wind_speed: 6,
+    wind_dir: 'N',
+    wind_degree: 130,
+    cloudcover: 10,
+    uv_index: 6,
+    pressure: 1011,
+  },
 };
 
 let expectedData: Weather = {
@@ -26,7 +36,11 @@ let expectedData: Weather = {
   precipitation: 5,
   humidity: 20,
   windSpeed: 6,
-  imageSource: 'https://fake-host/image.png',
+  windDirection: 'N',
+  windDegree: 130,
+  cloudCover: 10,
+  uvIndex: 6,
+  pressure: 1011,
 };
 
 const KEY = 'user-data';
@@ -93,6 +107,7 @@ afterEach(() => {
 afterAll(() => server.close());
 
 const renderWeatherInfo = () => {
+  localStorage.setItem('is-location-granted', JSON.stringify(true));
   return renderWithRouter(
     WeatherInfo,
     { route: `/${cityName}` }
@@ -101,115 +116,32 @@ const renderWeatherInfo = () => {
 
 it('should show a loader initially', () => {
   renderWeatherInfo();
-  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
+  expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'true');
 });
 
 it('should hide the loader after data is fetched', async () => {
   renderWeatherInfo();
-  expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'true');
+  expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'true');
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
 });
 
 it('should show city name returned from server', async () => {
   renderWeatherInfo();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
   expect(screen.getByText(expectedData.title)).toBeInTheDocument();
-});
-
-it('should show image returned from server', async () => {
-  renderWeatherInfo();
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-  expect(screen.getByRole('img')).toHaveAttribute('src', expectedData.imageSource);
-});
-
-it('should show temperature returned from server', async () => {
-  renderWeatherInfo();
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-  expect(screen.getByText(`${expectedData.temperature}`)).toBeInTheDocument();
-});
-
-it('should show unit of temperature as °C besides temperature', async () => {
-  renderWeatherInfo();
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-  const container = screen.getByText(`${expectedData.temperature}`);
-  expect(container).toBeInTheDocument();
-  const containerParent = container.parentElement;
-  expect(within((containerParent as HTMLElement)).getByText('°C')).toBeInTheDocument();
-});
-
-it('shows precipitation and its value with unit', async () => {
-  renderWeatherInfo();
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-  const container = screen.getByText('Precipitation');
-  expect(container).toBeInTheDocument();
-  const containerParent = container.closest('tr');
-  expect(within((containerParent as HTMLElement)).getByText(`${expectedData.precipitation}%`)).toBeInTheDocument();
-});
-
-it('shows humidity and its value with unit', async () => {
-  renderWeatherInfo();
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-  const container = screen.getByText('Humidity');
-  expect(container).toBeInTheDocument();
-  const containerParent = container.closest('tr');
-  expect(within((containerParent as HTMLElement)).getByText(`${expectedData.humidity}%`)).toBeInTheDocument();
-});
-
-it('shows wind speed and its value with unit', async () => {
-  renderWeatherInfo();
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-  const container = screen.getByText('Wind');
-  expect(container).toBeInTheDocument();
-  const containerParent = container.closest('tr');
-  expect(within((containerParent as HTMLElement)).getByText(`${expectedData.windSpeed} km/h`)).toBeInTheDocument();
-});
-
-it('renders favorite as checked initially when it is favorite in local-storage', async () => {
-  const ITEM = {
-    cityName,
-    isFavorite: true,
-    notes: 'Test Notes',
-  };
-  saveUserData(ITEM);
-  renderWeatherInfo();
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-  expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toBeTruthy();
 });
 
 it('renders restore button when city is already removed', async () => {
   removeCity(cityName);
   renderWeatherInfo();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
   expect(screen.getByRole('button', { name: /restore/i })).toBeInTheDocument();
-});
-
-it('does not render favorite checkbox when city is already removed', async () => {
-  removeCity(cityName);
-  renderWeatherInfo();
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-  expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
 });
 
 it('should restore city and show notification on click of restore button', async () => {
@@ -219,7 +151,7 @@ it('should restore city and show notification on click of restore button', async
 
   renderWeatherInfo();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   expect(restoredCities).toEqual([]);
@@ -234,19 +166,31 @@ it('should restore city and show notification on click of restore button', async
   expect(notificationSpy).toHaveBeenCalledWith('City Restored!', 'success', 3000);
 });
 
-it('should render favorite checkbox on click of restore button', async () => {
-  removeCity(cityName);
-
+it('renders favorite as checked initially when it is favorite in local-storage', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: true,
+    notes: 'Test Notes',
+  };
+  saveUserData(ITEM);
   renderWeatherInfo();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
-  
-  const restoreButton = screen.getByRole('button', { name: /restore/i });
-  fireEvent.click(restoreButton);
-
-  expect(screen.getByRole('checkbox')).toBeInTheDocument();
+  expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toBeTruthy();
 });
+
+
+
+it('does not render favorite checkbox when city is already removed', async () => {
+  removeCity(cityName);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+});
+
 
 it('renders favorite as unchecked initially when it is not favorite in local-storage', async () => {
   const ITEM = {
@@ -257,7 +201,7 @@ it('renders favorite as unchecked initially when it is not favorite in local-sto
   saveUserData(ITEM);
   renderWeatherInfo();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
   expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toBeFalsy();
 });
@@ -265,7 +209,7 @@ it('renders favorite as unchecked initially when it is not favorite in local-sto
 it('renders favorite as unchecked initially when item is not present in user-data', async () => {
   renderWeatherInfo();
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
   expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toBeFalsy();
 });
@@ -277,7 +221,7 @@ it('toggles isFavorite in user data in local-storage on favorite click', async (
   const initialDataItem = initialData.find(item => item.cityName === cityName);
 
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   fireEvent.click(screen.getByRole('checkbox'));
@@ -298,7 +242,7 @@ it('changes favorite label on favorite click', async () => {
   renderWeatherInfo();
 
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   expect(screen.getByText(/mark as favorite/i)).toBeInTheDocument();
@@ -315,7 +259,7 @@ it('shows notification on favorite click', async () => {
   renderWeatherInfo();
 
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   fireEvent.click(screen.getByRole('checkbox'));
@@ -326,109 +270,345 @@ it('shows notification on favorite click', async () => {
 
 });
 
-it ('saves new item with provided notes on save click when item is not present in user-data', async () => {
-  renderWeatherInfo();
-
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-
-  const notes = `This is test notes for ${cityName}`;
-  fireEvent.change(screen.getByLabelText(/notes/i), { target: { value: notes }});
-  fireEvent.click(screen.getByRole('button', { name: /save/i }));
-
-  const userData: UserData[] = JSON.parse(localStorage.getItem('user-data') || '[]');
-  const item = userData.find(item => item.cityName === cityName);
-  expect(item).toBeDefined();
-  expect(item?.notes).toEqual(notes);
-});
-
-it ('replaces notes with provided notes on save click when item is favorite', async () => {
-  const ITEM = {
-    cityName,
-    isFavorite: true,
-    notes: 'Test Notes',
-  };
-  saveUserData(ITEM);
+it('should render favorite checkbox on click of restore button', async () => {
+  removeCity(cityName);
 
   renderWeatherInfo();
-
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
+  
+  const restoreButton = screen.getByRole('button', { name: /restore/i });
+  fireEvent.click(restoreButton);
 
-  const notes = `This is test notes for ${cityName}`;
-  fireEvent.change(screen.getByLabelText(/notes/i), { target: { value: notes }});
-  fireEvent.click(screen.getByRole('button', { name: /save/i }));
-
-  const userData: UserData[] = JSON.parse(localStorage.getItem('user-data') || '[]');
-  const item = userData.find(item => item.cityName === cityName);
-  expect(item?.notes).toEqual(notes);
+  expect(screen.getByRole('checkbox')).toBeInTheDocument();
 });
 
-it('removes notes correctly on save when item is favorite', async () => {
-  const ITEM = {
-    cityName,
-    isFavorite: true,
-    notes: 'Test Notes',
-  };
-  saveUserData(ITEM);
-
+it('shows temperature and its value with unit °C', async () => {
   renderWeatherInfo();
-
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
-
-  const notes = '';
-  fireEvent.change(screen.getByLabelText(/notes/i), { target: { value: notes }});
-  fireEvent.click(screen.getByRole('button', { name: /save/i }));
-
-  const userData: UserData[] = JSON.parse(localStorage.getItem('user-data') || '[]');
-  const item = userData.find(item => item.cityName === cityName);
-  expect(item?.notes).toEqual(notes);
+  const temperatureLabel = screen.getByText('Temperature');
+  const weatherCard = temperatureLabel.closest('.weather-card')! as HTMLElement;
+  expect(within(weatherCard).getByText(`${expectedData.temperature}°C`)).toBeInTheDocument();
 });
 
-it('removes item from user-data on save when notes is empty and item is not favorite', async () => {
+it('shows humidity and its value with unit %', async () => {
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const humidityLabel = screen.getByText('Humidity');
+  const weatherCard = humidityLabel.closest('.weather-card')! as HTMLElement;
+  expect(within(weatherCard).getByText(`${expectedData.humidity}%`)).toBeInTheDocument();
+});
+
+it('shows precipitation and its value with unit %', async () => {
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const precipitationLabel = screen.getByText('Precipitation');
+  const weatherCard = precipitationLabel.closest('.weather-card')! as HTMLElement;
+  expect(within(weatherCard).getByText(`${expectedData.precipitation}%`)).toBeInTheDocument();
+});
+
+it('shows cloud cover and its value with unit %', async () => {
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const cloudCoverLabel = screen.getByText('Cloud Cover');
+  const weatherCard = cloudCoverLabel.closest('.weather-card')! as HTMLElement;
+  expect(within(weatherCard).getByText(`${expectedData.cloudCover}%`)).toBeInTheDocument();
+});
+
+it('shows pressure and its value with unit Pa', async () => {
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const pressureLabel = screen.getByText('Pressure');
+  const weatherCard = pressureLabel.closest('.weather-card')! as HTMLElement;
+  expect(within(weatherCard).getByText(`${expectedData.pressure} Pa`)).toBeInTheDocument();
+});
+
+it('shows uv index and its value', async () => {
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const uvIndexLabel = screen.getByText('UV Index');
+  const weatherCard = uvIndexLabel.closest('.weather-card')! as HTMLElement;
+  expect(within(weatherCard).getByText(expectedData.uvIndex)).toBeInTheDocument();
+});
+
+it('shows wind speed and its value with unit km/h', async () => {
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const windSpeedLabel = screen.getByText('Wind Speed');
+  const weatherCard = windSpeedLabel.closest('.weather-card')! as HTMLElement;
+  expect(within(weatherCard).getByText(`${expectedData.windSpeed} km/h`)).toBeInTheDocument();
+});
+
+it('shows wind direction and its value with unit °', async () => {
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const windDirectionLabel = screen.getByText('Wind Direction');
+  const weatherCard = windDirectionLabel.closest('.weather-card')! as HTMLElement;
+  expect(within(weatherCard).getByText(`${expectedData.windDegree}° ${expectedData.windDirection}`)).toBeInTheDocument();
+});
+
+it('shows notes label', async () => {
   const ITEM = {
     cityName,
     isFavorite: false,
-    notes: 'Test Notes',
+    notes: '',
   };
   saveUserData(ITEM);
-
   renderWeatherInfo();
-
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
-
-  const notes = '';
-  fireEvent.change(screen.getByLabelText(/notes/i), { target: { value: notes }});
-  fireEvent.click(screen.getByRole('button', { name: /save/i }));
-
-  const userData: UserData[] = JSON.parse(localStorage.getItem('user-data') || '[]');
-  const item = userData.find(item => item.cityName === cityName);
-  expect(item).toBeUndefined();
+  expect(screen.getByText('Notes')).toBeInTheDocument();
 });
 
-it('shows notification on notes save', async () => {
+it('shows no notes message and add notes button when notes are empty', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: '',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  expect(screen.getByText(/no notes/i)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /add notes/i })).toBeInTheDocument();
+});
+
+it('shows cancel and save button along with textarea on click of add notes button', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: '',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const addNotesButton = screen.getByRole('button', { name: /add notes/i });
+  fireEvent.click(addNotesButton);
+  expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
+  expect(screen.getByTestId('textarea')).toBeInTheDocument();
+});
+
+it('hides cancel and save button along with textarea and shows no notes message with add notes button on click of cancel', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: '',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const addNotesButton = screen.getByRole('button', { name: /add notes/i });
+  fireEvent.click(addNotesButton);
+  const textarea = screen.getByTestId('textarea');
+  fireEvent.change(textarea, { target: { value: 'test text' }});
+  const cancelButton = screen.getByRole('button', { name: /cancel/i });
+  fireEvent.click(cancelButton);
+  expect(screen.getByText(/no notes/i)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /add notes/i })).toBeInTheDocument();
+  const latestUserData = getUserData(cityName);
+  expect(latestUserData).toEqual(undefined);
+});
+
+it('saves notes and shows textarea in readonly mode \
+  and hides save and cancel button \
+  and shows edit and delete button \
+  on click of save button', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: '',
+  };
+  saveUserData(ITEM);
   const notificationSpy = jest.spyOn(notificationHelpers, 'showNotification');
   renderWeatherInfo();
-
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
-
-  fireEvent.click(screen.getByRole('button', { name: /save/i }));
-
+  const addNotesButton = screen.getByRole('button', { name: /add notes/i });
+  fireEvent.click(addNotesButton);
+  const textarea = screen.getByTestId('textarea');
+  fireEvent.change(textarea, { target: { value: 'test text' }});
+  const cancelButton = screen.getByRole('button', { name: /cancel/i });
+  const saveButton = screen.getByRole('button', { name: /save/i });
+  fireEvent.click(saveButton);
   expect(notificationSpy).toHaveBeenNthCalledWith(1, 'Notes saved!', 'success', 3000);
+  expect(saveButton).not.toBeInTheDocument();
+  expect(cancelButton).not.toBeInTheDocument();
+  const latestUserData = getUserData(cityName);
+  expect(latestUserData?.notes).toEqual('test text');
+  expect(textarea).toHaveAttribute('readonly');
+  const editButton = screen.getByRole('button', { name: /edit/i });
+  expect(editButton).toBeInTheDocument();
+  const deleteButton = screen.getByRole('button', { name: /delete/i });
+  expect(deleteButton).toBeInTheDocument();
+});
 
-  const notes = 'Test notes';
-  fireEvent.change(screen.getByLabelText(/notes/i), { target: { value: notes }});
-  fireEvent.click(screen.getByRole('button', { name: /save/i }));
+it('shows edit and delete button initially when notes is already present', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: 'Test notes',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const textarea = screen.getByTestId('textarea');
+  expect(textarea).toHaveAttribute('readonly');
+  const editButton = screen.getByRole('button', { name: /edit/i });
+  expect(editButton).toBeInTheDocument();
+  const deleteButton = screen.getByRole('button', { name: /delete/i });
+  expect(deleteButton).toBeInTheDocument();
+});
 
-  expect(notificationSpy).toHaveBeenNthCalledWith(2, 'Notes saved!', 'success', 3000);
+it('turns on edit mode on click of edit button', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: 'Test notes',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const editButton = screen.getByRole('button', { name: /edit/i });
+  expect(editButton).toBeInTheDocument();
+  fireEvent.click(editButton);
+  const cancelButton = screen.getByRole('button', { name: /cancel/i });
+  expect(cancelButton).toBeInTheDocument();
+  const saveButton = screen.getByRole('button', { name: /save/i });
+  expect(saveButton).toBeInTheDocument();
+  const textarea = screen.getByTestId('textarea');
+  expect(textarea).not.toHaveAttribute('readonly');
+});
+
+it('turns off edit mode on click of save after edit', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: 'Test notes',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const editButton = screen.getByRole('button', { name: /edit/i });
+  expect(editButton).toBeInTheDocument();
+  fireEvent.click(editButton);
+  const textarea = screen.getByTestId('textarea');
+  fireEvent.change(textarea, { target: { value: 'Edited text' } });
+  const saveButton = screen.getByRole('button', { name: /save/i });
+  expect(saveButton).toBeInTheDocument();
+  fireEvent.click(saveButton);
+  const latestUserData = getUserData(cityName);
+  expect(latestUserData?.notes).toEqual('Edited text');
+  expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
+  expect(textarea).toHaveAttribute('readonly');
+  const deleteButton = screen.getByRole('button', { name: /delete/i });
+  expect(deleteButton).toBeInTheDocument();
+});
+
+it('shows dialog on click of delete button', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: 'Test notes',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const deleteButton = screen.getByRole('button', { name: /delete/i });
+  fireEvent.click(deleteButton);
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+});
+
+it('does not change anything on click of cancel after delete', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: 'Test notes',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const editButton = screen.getByRole('button', { name: /edit/i });
+  expect(editButton).toBeInTheDocument();
+  const deleteButton = screen.getByRole('button', { name: /delete/i });
+  expect(deleteButton).toBeInTheDocument();
+  const textarea = screen.getByTestId('textarea');
+  expect(textarea).toBeInTheDocument();
+  expect(textarea).toHaveAttribute('readonly');  
+  const latestUserData = getUserData(cityName);
+  expect(latestUserData?.notes).toEqual('Test notes');
+  fireEvent.click(deleteButton);
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+  const cancelButton = screen.getByRole('button', { name: /cancel/i });
+  expect(cancelButton).toBeInTheDocument();
+  fireEvent.click(cancelButton);
+  expect(editButton).toBeInTheDocument();
+  expect(deleteButton).toBeInTheDocument();
+  expect(textarea).toBeInTheDocument();
+  expect(textarea).toHaveAttribute('readonly');  
+  const newUserData = getUserData(cityName);
+  expect(newUserData?.notes).toEqual('Test notes');
+});
+
+it('deletes notes on click of confirm button after delete button click', async () => {
+  const ITEM = {
+    cityName,
+    isFavorite: false,
+    notes: 'Test notes',
+  };
+  saveUserData(ITEM);
+  renderWeatherInfo();
+  await waitFor(() => {
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
+  });
+  const deleteButton = screen.getByRole('button', { name: /delete/i });
+  expect(deleteButton).toBeInTheDocument();
+  fireEvent.click(deleteButton);
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+  const confirmButton = screen.getByRole('button', { name: /confirm/i });
+  expect(confirmButton).toBeInTheDocument();
+  fireEvent.click(confirmButton);
+  expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /delete/i })).not.toBeInTheDocument();
+  expect(screen.getByText(/no notes/i)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /add notes/i })).toBeInTheDocument();
+  const latestUserData = getUserData(cityName);
+  expect(latestUserData).toEqual(undefined);
 });
 
 it('does not touch notes on favorite click', async () => {
@@ -442,7 +622,7 @@ it('does not touch notes on favorite click', async () => {
   renderWeatherInfo();
 
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
 
   fireEvent.click(screen.getByRole('checkbox'));
@@ -455,51 +635,22 @@ it('does not touch notes on favorite click', async () => {
 it('does not touch favorite on notes save', async () => {
   const ITEM = {
     cityName,
-    isFavorite: true,
-    notes: 'Test Notes',
+    isFavorite: false,
+    notes: 'Test notes',
   };
   saveUserData(ITEM);
-
   renderWeatherInfo();
-
   await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
+    expect(screen.getByTestId('weather-loader')).toHaveAttribute('aria-busy', 'false');
   });
-
-  const notes = 'Changed note';
-  fireEvent.change(screen.getByLabelText(/notes/i), { target: { value: notes }});
-  fireEvent.click(screen.getByRole('button', { name: /save/i }));
-
-  const userData: UserData[] = JSON.parse(localStorage.getItem('user-data') || '[]');
-  const item = userData.find(item => item.cityName === cityName);
-  expect(item?.isFavorite).toEqual(ITEM.isFavorite);
+  const editButton = screen.getByRole('button', { name: /edit/i });
+  expect(editButton).toBeInTheDocument();
+  fireEvent.click(editButton);
+  const textarea = screen.getByTestId('textarea');
+  fireEvent.change(textarea, { target: { value: 'Edited text' } });
+  const saveButton = screen.getByRole('button', { name: /save/i });
+  expect(saveButton).toBeInTheDocument();
+  fireEvent.click(saveButton);
+  const latestUserData = getUserData(cityName);
+  expect(latestUserData?.isFavorite).toEqual(ITEM.isFavorite);
 });
-
-it('does not save stale data', async () => {
-  renderWeatherInfo();
-
-  await waitFor(() => {
-    expect(document.querySelector('.loader')).toHaveAttribute('aria-busy', 'false');
-  });
-
-  for (let i = 0; i < 20; i++) {
-    if (Math.random() <= 0.5) {
-      fireEvent.click(screen.getByRole('checkbox'));
-    }
-
-    let notes = '';
-    if (Math.random() <= 0.5) {
-      notes = 'Changed note';
-    } else {
-      notes = '';
-    }
-    fireEvent.change(screen.getByLabelText(/notes/i), { target: { value: notes }});
-
-    if (Math.random() <= 0.5) {
-      fireEvent.click(screen.getByRole('button', { name: /save/i }));
-    }
-
-    const userData: UserData[] = JSON.parse(localStorage.getItem(KEY) || '[]')
-    expect(userData.find(item => !item.isFavorite && !item.notes)).toBeUndefined();
-  }
-}); 
