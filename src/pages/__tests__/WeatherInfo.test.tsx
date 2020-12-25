@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { BrowserRouter, Route } from 'react-router-dom';
+import Dialog from 'react-modal';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import '@testing-library/jest-dom/extend-expect'
 
@@ -69,13 +70,16 @@ const renderWithRouter = (ui: React.FunctionComponent, { route = '/tokyo', path 
 
   const queryClient = new QueryClient();
 
-  return render(
+  const { container, ...rest } = render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Route path={path} component={ui} />
       </BrowserRouter>
     </QueryClientProvider>
   );
+
+  Dialog.setAppElement(container as HTMLElement);
+  return { container, ...rest };
 };
 
 beforeAll(() => server.listen());
