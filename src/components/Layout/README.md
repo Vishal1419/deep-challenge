@@ -66,3 +66,8 @@ Layout - Back button
 
 ![Layout Back Button](README-assets/layout-back-button.png)
 
+<br />
+
+Layout - fetching location
+
+![Layout Fetching Location](README-assets/layout-fetching-location.png)

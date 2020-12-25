@@ -7,6 +7,7 @@ There are mainly two pages in the application:
 
 ## Features
 
+- Automatically detects your location and show your city weather details.
 - See weather conditions of top cities by population
 - Remove unwanted cities
 - Restore cities that were removed previously
@@ -99,6 +100,8 @@ Details Page
 [useCity Hook](src/shared/useCity/README.md)
 
 [useWeather Hook](src/shared/useWeather/README.md)
+
+[useGeoLocation Hook](src/shared/useGeoLocation/README.md)
 
 [Notifier](src/shared/notifier/README.md)
 
