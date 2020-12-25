@@ -14,7 +14,7 @@ import { showNotification } from '../../shared/notifier';
 
 interface Props {
   className?: string;
-  children: ReactNode | ReactNode[];
+  children: (fetchingLocation: boolean) => ReactNode | ReactNode[];
   showHeaderBackButton?: boolean
 }
 
@@ -58,7 +58,7 @@ const Layout: FunctionComponent<Props & EnhancedProps> = ({
           </ErrorBoundary>
           <ErrorBoundary key={match.params.cityName}>
             <PageContent>
-              {children}
+              {children(loading)}
             </PageContent>
           </ErrorBoundary>
         </div>

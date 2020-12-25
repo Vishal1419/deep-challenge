@@ -1,5 +1,4 @@
 import React, { FunctionComponent, ReactNode } from 'react';
-import classNames from 'classnames';
 import BlockUI from 'react-block-ui';
 
 interface Props {
@@ -15,7 +14,7 @@ const Loader: FunctionComponent<Props> = ({ children, loading, size = 50, render
   <BlockUI
     {...rest}
     tag="div"
-    className={classNames('loader', { 'has-message': !!message })}
+    className="loader"
     keepInView
     blocking={loading}
     renderChildren={renderChildren}

@@ -5,7 +5,7 @@ import Layout from '../../components/Layout';
 
 const WeatherInfoContainer: FunctionComponent = () => (
   <Layout className="weather-info-layout" showHeaderBackButton>
-    <WeatherInfo />
+    {(isFetchingLocation) => <WeatherInfo isFetchingLocation={isFetchingLocation} />}
   </Layout>
 )
 

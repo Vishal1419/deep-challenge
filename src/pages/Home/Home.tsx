@@ -7,9 +7,13 @@ import useCity from '../../shared/useCity';
 import useWeather from '../../shared/useWeather';
 import Loader from '../../components/Loader';
 
+interface Props {
+  isFetchingLocation: boolean;
+};
+
 export const PAGE_SIZE = 15;
 
-const Home: FunctionComponent = () => {
+const Home: FunctionComponent<Props> = ({ isFetchingLocation }) => {
   const [, forceUpdate] = useState(false);
 
   const excludedCities = getExcludedCities();
@@ -67,7 +71,7 @@ const Home: FunctionComponent = () => {
   
   return (
     <div className="home">
-      <Loader loading={citiesLoading || weatherCollectionLoading} data-testid="home-loader">
+      <Loader loading={!isFetchingLocation && (citiesLoading || weatherCollectionLoading)} data-testid="home-loader">
         <WeatherReport
           weatherCollection={weatherCollection}
           loading={citiesLoading || weatherCollectionLoading}

@@ -5,7 +5,7 @@ import Layout from '../../components/Layout';
 
 const HomeContainer: FunctionComponent = () => (
   <Layout className="home-layout">
-    <Home />
+    {(isFetchingLocation) => <Home isFetchingLocation={isFetchingLocation} />}
   </Layout>
 );
 

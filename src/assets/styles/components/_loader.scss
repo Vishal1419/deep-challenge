@@ -1,12 +1,5 @@
 .loader {
   height: 100%;
-  &.has-message {
-    .block-ui-container {
-      .block-ui-overlay {
-        opacity: 1;
-      }
-    }
-  }
   .spinner-container {
     display: flex;
     flex-direction: column;

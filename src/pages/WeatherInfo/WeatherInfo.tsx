@@ -10,8 +10,8 @@ import Loader from '../../components/Loader';
 import { showNotification } from '../../shared/notifier';
 
 interface Props {
-
-}
+  isFetchingLocation: boolean;
+};
 
 interface EnhancedProps {
   match: {
@@ -21,7 +21,7 @@ interface EnhancedProps {
   }
 }
 
-const WeatherInfo: FunctionComponent<Props & EnhancedProps> = ({ match }) => {
+const WeatherInfo: FunctionComponent<Props & EnhancedProps> = ({ isFetchingLocation, match }) => {
   const { cityName } = match.params;
   const { weatherCollection, isLoading, isError, error } = useWeather({ cityNames: [cityName] });
 
@@ -34,7 +34,7 @@ const WeatherInfo: FunctionComponent<Props & EnhancedProps> = ({ match }) => {
   }
 
   return (
-    <Loader loading={isLoading} renderChildren={false} data-testid="weather-loader">
+    <Loader loading={!isFetchingLocation && isLoading} renderChildren={false} data-testid="weather-loader">
       <div className="weather-info">
         <WeatherHeader weather={weatherCollection[0]} />
         <div className="weather-info-content">
