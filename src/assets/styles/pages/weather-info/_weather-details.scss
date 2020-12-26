@@ -1,8 +1,12 @@
 .weather-details {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 2rem;
-  align-items: initial;
+  display: flex;
+  flex-wrap: wrap;
+  @supports(display: grid) {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 2rem;
+    align-items: initial;
+  }
   @include laptop {
     grid-template-columns: auto;
     grid-gap: unset;

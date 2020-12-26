@@ -2,6 +2,10 @@
   display: flex;
   align-items: center;
   height: 100%;
+  width: 50%;
+  @supports(display: grid) {
+    width: unset;
+  }
   > svg {
     height: 64px;
     width: 64px;
