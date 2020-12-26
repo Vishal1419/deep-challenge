@@ -3,8 +3,10 @@
   align-items: center;
   height: 100%;
   width: 50%;
+  margin-bottom: 2rem;
   @supports(display: grid) {
     width: unset;
+    margin-bottom: unset;
   }
   > svg {
     height: 64px;
@@ -16,10 +18,13 @@
   .info {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: flex-start;
     height: 100%;
     margin: 0 1rem;
+    @supports(display: grid) {
+      justify-content: space-evenly;
+    }
     .label {
       color: $text-color-light;
       text-transform: uppercase;
