@@ -31,7 +31,7 @@ You can check the live app here: https://tender-galileo-c4cb5c.netlify.app/
 
 ## Video explaining the features of this project
 
-https://drive.google.com/file/d/1NQyIuuqmQE8QJtyY8vIDrz9ycggjYlXb/view?usp=sharing
+https://drive.google.com/file/d/1Q2Qa4ZTCF4JLfjFs196ZshfbVWqoL__T/view?usp=sharing
 
 <br />
 <br />
