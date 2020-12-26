@@ -23,7 +23,7 @@ There are mainly two pages in the application:
 
 ## Live app link
 
-You can check the live app here: https://master--tender-pare-dd5b54.netlify.app/
+You can check the live app here: https://tender-galileo-c4cb5c.netlify.app/
 
 <br />
 <br />
@@ -31,7 +31,7 @@ You can check the live app here: https://master--tender-pare-dd5b54.netlify.app/
 
 ## Video explaining the features of this project
 
-https://drive.google.com/file/d/1Emir0kX6pbOJZZlp-6L0r95YKZuuasAX/view?usp=sharing
+https://drive.google.com/file/d/1NQyIuuqmQE8QJtyY8vIDrz9ycggjYlXb/view?usp=sharing
 
 <br />
 <br />
