@@ -4,6 +4,7 @@
   flex: 1 1 auto;
   border-bottom: 2rem solid transparent;
   background-clip: padding-box;
+  height: fit-content;
   @include mobile {
     padding: 1rem;
     border-bottom-width: 1rem;
