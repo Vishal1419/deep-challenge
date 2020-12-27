@@ -71,7 +71,7 @@ const Home: FunctionComponent<Props> = ({ isFetchingLocation }) => {
   
   return (
     <div className="home">
-      <Loader loading={!isFetchingLocation && (citiesLoading || weatherCollectionLoading)} data-testid="home-loader">
+      <Loader loading={citiesLoading || weatherCollectionLoading} hideLoader={isFetchingLocation} data-testid="home-loader">
         <WeatherReport
           weatherCollection={weatherCollection}
           loading={citiesLoading || weatherCollectionLoading}

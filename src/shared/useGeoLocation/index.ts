@@ -5,7 +5,7 @@ interface Coordinates {
   longitude: number;
 };
 
-const useGeoLocation = (localStorageKey = 'is-location-granted') => {
+const useGeoLocation = ({ isEnabled = false, localStorageKey = 'is-location-granted' }) => {
   const [shouldRequestLocation, setShouldRequestLocation] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<GeolocationPositionError>();
@@ -28,16 +28,18 @@ const useGeoLocation = (localStorageKey = 'is-location-granted') => {
   }
 
   useEffect(() => {
-    if ('permissions' in navigator) {
-      navigator.permissions.query({ name: 'geolocation' }).then((permissionStatus) => {
-        if (permissionStatus.state !== 'granted') {
+    if(isEnabled) {
+      if ('permissions' in navigator) {
+        navigator.permissions.query({ name: 'geolocation' }).then((permissionStatus) => {
+          if (permissionStatus.state !== 'granted') {
+            setShouldRequestLocation(true);
+          }
+        });
+      } else {
+        const isLocationGranted = JSON.parse(localStorage.getItem(localStorageKey) || 'false');
+        if (!isLocationGranted) {
           setShouldRequestLocation(true);
         }
-      });
-    } else {
-      const isLocationGranted = JSON.parse(localStorage.getItem(localStorageKey) || 'false');
-      if (!isLocationGranted) {
-        setShouldRequestLocation(true);
       }
     }
   }, []); // eslint-disable-line

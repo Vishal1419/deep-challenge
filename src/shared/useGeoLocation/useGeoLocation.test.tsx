@@ -12,7 +12,7 @@ it('returns error when geolocation is not supported', () => {
   delete (global as any).navigator.permissions;
   delete (global as any).navigator.geolocation;
 
-  const { result } = renderHook(() => useGeoLocation());
+  const { result } = renderHook(() => useGeoLocation({ isEnabled: true }));
 
   const { loading, error, coords } = result.current;
   expect(loading).toEqual(false);
@@ -26,7 +26,7 @@ it('returns current position when permissions is supported and permission is not
       .mockImplementationOnce(() => Promise.resolve({ state: undefined })),
   };
 
-  const { result, waitFor } = renderHook(() => useGeoLocation());
+  const { result, waitFor } = renderHook(() => useGeoLocation({ isEnabled: true }));
   
   const { loading: initialLoading, error: initialError, coords: initialCoords } = result.current;
   expect(initialLoading).toEqual(false);
@@ -62,7 +62,7 @@ it('returns undefined when permissions is supported and permission is already gr
       .mockImplementationOnce(() => Promise.resolve({ state: 'granted' })),
   };
 
-  const { result } = renderHook(() => useGeoLocation());
+  const { result } = renderHook(() => useGeoLocation({ isEnabled: true }));
 
   const { loading, error, coords } = result.current;
   expect(loading).toEqual(false);
@@ -73,7 +73,7 @@ it('returns undefined when permissions is supported and permission is already gr
 it('returns current position when permissions is not supported and is-location-granted is not present in localStorage', async () => {
   delete (global as any).navigator.permissions;
 
-  const { result, waitFor } = renderHook(() => useGeoLocation());
+  const { result, waitFor } = renderHook(() => useGeoLocation({ isEnabled: true }));
 
   const { loading: _loading, error: _error, coords: _coords } = result.current;
   expect(_loading).toEqual(true);
@@ -96,7 +96,7 @@ it('returns currrent position when permissions is not supported and is-location-
   delete (global as any).navigator.permissions;
   localStorage.setItem('is-location-granted', JSON.stringify(false));
 
-  const { result, waitFor } = renderHook(() => useGeoLocation());
+  const { result, waitFor } = renderHook(() => useGeoLocation({ isEnabled: true }));
 
   const { loading: _loading, error: _error, coords: _coords } = result.current;
   expect(_loading).toEqual(true);
@@ -119,7 +119,7 @@ it('returns undefined when permissions is not supported and is-location-granted 
   delete (global as any).navigator.permissions;
   localStorage.setItem('is-location-granted', JSON.stringify(true));
 
-  const { result } = renderHook(() => useGeoLocation());
+  const { result } = renderHook(() => useGeoLocation({ isEnabled: true }));
 
   const { loading, error, coords } = result.current;
   expect(loading).toEqual(false);
@@ -144,7 +144,7 @@ it('returns error when geolocation returns error', async () => {
   };
   (global as any).navigator.geolocation = mockGeolocation;
 
-  const { result, waitFor } = renderHook(() => useGeoLocation());
+  const { result, waitFor } = renderHook(() => useGeoLocation({ isEnabled: true }));
 
   const { loading: _loading, error: _error, coords: _coords } = result.current;
   expect(_loading).toEqual(true);

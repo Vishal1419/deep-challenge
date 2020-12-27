@@ -30,11 +30,11 @@ const WeatherInfo: FunctionComponent<Props & EnhancedProps> = ({ isFetchingLocat
   }
 
   if(!isLoading && weatherCollection.length === 0) {
-    return <div className="no-data">No data available</div>
+    return <div className="no-data">No data available</div>;
   }
 
   return (
-    <Loader loading={!isFetchingLocation && isLoading} renderChildren={false} data-testid="weather-loader">
+    <Loader loading={isLoading} hideLoader={isFetchingLocation} renderChildren={false} data-testid="weather-loader">
       <div className="weather-info">
         <WeatherHeader weather={weatherCollection[0]} />
         <div className="weather-info-content">

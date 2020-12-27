@@ -33,19 +33,21 @@ const Layout: FunctionComponent<Props & EnhancedProps> = ({
   className, children,
   showHeaderBackButton, match, history,
 }) => {
-  const { loading, coords } = useGeoLocation();
+  const { cityName } = match.params;
+  const mySavedCityName = localStorage.getItem('my-location');
+  const { loading, coords } = useGeoLocation({ isEnabled: cityName !== mySavedCityName });
   
   const {
     weatherCollection, isError, error: WeatherError,
   } = useWeather({ cityNames: coords ? [`${coords.latitude},${coords.longitude}`] : [] });
-
+  
   if (isError) {
     showNotification(WeatherError.message, 'error');
   }
-
-  const { cityName } = match.params;
+  
   const myCityName = weatherCollection[0] && weatherCollection[0].title.toLowerCase();
   if (myCityName && cityName !== myCityName) {
+    localStorage.setItem('my-location', myCityName);
     history.push(`/${myCityName}`);
   }
 
